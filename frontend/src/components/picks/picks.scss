@@ -1,0 +1,94 @@
+
+.picks {
+  display: inline-block;
+  width: calc(100% / 7 * 5);
+  padding: 5px;
+}
+
+.card {
+  position: relative;
+  display: inline-block;
+  width: calc(20% - 20px);
+  margin: 10px;
+}
+
+.bonusRoundPicks {
+  width: calc(100% / 7 * 6);
+
+  .card {
+    width: calc(100% / 6 - 20px);
+  }
+}
+
+.picked {
+  transform: scale(1.05);
+  z-index: 5;
+}
+
+.notpicked {
+  opacity: 0.7;
+}
+
+.verticalCenterWrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.verticalCenter {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 5%;
+
+  opacity: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  transition: .2s opacity linear;
+
+  & button {
+    cursor: default !important;
+  }
+}
+
+.card.pickable:not(.picked):hover .overlay {
+  display: block;
+  opacity: 1;
+
+  & button {
+    cursor: pointer !important;
+  }
+}
+
+.group {
+  position: relative;
+  display: inline-block;
+  border: 3px solid #393939;
+  border-radius: 10px;
+  z-index: 9;
+
+  width: calc(100% / 3 - 15px);
+  margin: 0 7.5px;
+
+  .card {
+    width: calc(50% - 20px);
+  }
+
+}
+
+.group.pickable:not(.picked):hover .overlay {
+  display: block;
+  opacity: 1;
+
+  & button {
+    cursor: pointer !important;
+  }
+}

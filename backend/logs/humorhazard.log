@@ -1,0 +1,104 @@
+21:07:01.822 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:07:55.672 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:08:07.141 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:08:18.677 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:09:02.480 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:10:02.150 INFO  NettyServer - Checking 0 channels for inactivity.
+21:11:02.157 INFO  NettyServer - Checking 0 channels for inactivity.
+21:12:02.148 INFO  NettyServer - Checking 0 channels for inactivity.
+21:13:02.147 INFO  NettyServer - Checking 0 channels for inactivity.
+21:14:02.157 INFO  NettyServer - Checking 0 channels for inactivity.
+21:15:02.141 INFO  NettyServer - Checking 0 channels for inactivity.
+21:16:02.148 INFO  NettyServer - Checking 0 channels for inactivity.
+21:17:02.155 INFO  NettyServer - Checking 0 channels for inactivity.
+21:18:02.149 INFO  NettyServer - Checking 0 channels for inactivity.
+21:19:02.153 INFO  NettyServer - Checking 0 channels for inactivity.
+21:20:02.147 INFO  NettyServer - Checking 0 channels for inactivity.
+21:21:02.153 INFO  NettyServer - Checking 0 channels for inactivity.
+21:22:02.142 INFO  NettyServer - Checking 0 channels for inactivity.
+21:23:02.152 INFO  NettyServer - Checking 0 channels for inactivity.
+21:24:02.147 INFO  NettyServer - Checking 0 channels for inactivity.
+21:25:02.141 INFO  NettyServer - Checking 0 channels for inactivity.
+21:26:02.148 INFO  NettyServer - Checking 0 channels for inactivity.
+21:27:02.151 INFO  NettyServer - Checking 0 channels for inactivity.
+21:28:02.146 INFO  NettyServer - Checking 0 channels for inactivity.
+21:29:02.149 INFO  NettyServer - Checking 0 channels for inactivity.
+21:30:02.144 INFO  NettyServer - Checking 0 channels for inactivity.
+21:31:02.142 INFO  NettyServer - Checking 1 channels for inactivity.
+21:32:02.146 INFO  NettyServer - Checking 1 channels for inactivity.
+21:33:02.152 INFO  NettyServer - Checking 1 channels for inactivity.
+21:34:02.155 INFO  NettyServer - Checking 1 channels for inactivity.
+21:35:02.143 INFO  NettyServer - Checking 2 channels for inactivity.
+21:36:02.152 INFO  NettyServer - Checking 4 channels for inactivity.
+21:37:02.176 INFO  NettyServer - Checking 1 channels for inactivity.
+21:37:48.123 WARN  SimpleChannelHandler - Error in pipeline, closing connection...
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at be.jorisg.humorhazard.PacketHandler.handle(PacketHandler.java:30) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.onMessage(SimpleChannelHandler.java:171) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.handleWebSocketFrame(SimpleChannelHandler.java:115) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.channelRead0(SimpleChannelHandler.java:60) ~[main/:?]
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) ~[netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:324) [netty-codec-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:296) [netty-codec-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:722) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:658) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:584) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:496) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:986) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at java.lang.Thread.run(Thread.java:833) [?:?]
+21:38:02.143 INFO  NettyServer - Checking 1 channels for inactivity.
+21:39:02.154 INFO  NettyServer - Checking 2 channels for inactivity.
+21:39:04.179 WARN  SimpleChannelHandler - Error in pipeline, closing connection...
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at be.jorisg.humorhazard.PacketHandler.handle(PacketHandler.java:30) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.onMessage(SimpleChannelHandler.java:171) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.handleWebSocketFrame(SimpleChannelHandler.java:115) ~[main/:?]
+	at be.jorisg.humorhazard.netty.SimpleChannelHandler.channelRead0(SimpleChannelHandler.java:60) ~[main/:?]
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99) ~[netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:324) [netty-codec-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:296) [netty-codec-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:722) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:658) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:584) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:496) [netty-transport-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:986) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [netty-common-4.1.72.Final.jar:4.1.72.Final]
+	at java.lang.Thread.run(Thread.java:833) [?:?]
+21:40:02.152 INFO  NettyServer - Checking 2 channels for inactivity.
+21:40:06.329 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:40:43.720 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:40:43.804 DEBUG SimpleChannelHandler - Opened connection from /[0:0:0:0:0:0:0:1]:53606
+21:40:47.495 DEBUG SimpleChannelHandler - IN /[0:0:0:0:0:0:0:1]:53606: {"name":"REGISTER","payload":{"name":"abc"},"callback":"0d1ae581-c2e6-4ff8-9bf5-575358cdac2c"}
+21:41:09.643 DEBUG SimpleChannelHandler - Opened connection from /[0:0:0:0:0:0:0:1]:53621
+21:41:10.907 DEBUG SimpleChannelHandler - Closed connection from /[0:0:0:0:0:0:0:1]:53621
+21:41:10.910 DEBUG SimpleChannelHandler - Closed connection from /[0:0:0:0:0:0:0:1]:53606
+21:41:11.443 DEBUG SimpleChannelHandler - Opened connection from /[0:0:0:0:0:0:0:1]:53623
+21:41:13.288 DEBUG SimpleChannelHandler - IN /[0:0:0:0:0:0:0:1]:53623: {"type":"REGISTER","payload":{"name":"abc"},"callback":"d47b702a-2938-4742-a622-df070f76e1f7"}
+21:41:38.518 INFO  NettyServer - Netty server listening on: 0.0.0.0:8080
+21:41:38.793 DEBUG SimpleChannelHandler - Opened connection from /127.0.0.1:53643
+21:41:40.290 DEBUG SimpleChannelHandler - IN /127.0.0.1:53643: {"type":"REGISTER","payload":{"name":"abc"},"callback":"2e7ae007-de25-4658-b6a2-bc08a3f4102f"}

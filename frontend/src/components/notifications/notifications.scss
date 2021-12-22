@@ -1,0 +1,9 @@
+
+.notifications {
+  position: absolute;
+  margin-top: 15px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  z-index: 1000;
+}

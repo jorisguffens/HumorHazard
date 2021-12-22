@@ -1,0 +1,73 @@
+
+.card {
+  background-color: #393939;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+}
+
+.verticalCenterWrapper {
+  display: table;
+  height: 100%;
+  min-height: 100vh; /* TODO WEIRD SHIT */
+  width: 100%;
+}
+
+.verticalCenter {
+  display: table-cell;
+  width: 100%;
+
+  vertical-align: middle;
+}
+
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+}
+
+.partyListTitle {
+  text-align: left;
+  margin: 0;
+}
+
+.partyListHeader {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #6f6f6f;
+}
+
+.createPartyWrapper {
+  text-align: right;
+}
+
+.partyList {
+  margin-top: 10px;
+
+  border-radius: 5px;
+  width: 100%;
+  padding: 15px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.emptyList {
+  text-align: center;
+  margin: 50px 0;
+}
+
+.textRight {
+  text-align: right;
+}
+
+.party {
+  padding: 10px 0;
+  margin-bottom: 10px;
+}
+
+.party:not(:last-child) {
+  border-bottom: 1px solid #6f6f6f
+}

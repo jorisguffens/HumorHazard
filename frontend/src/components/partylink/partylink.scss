@@ -1,0 +1,26 @@
+.partyLinkInfo {
+  display: block;
+  text-align: left;
+  margin-bottom: 0;
+}
+
+.partyLink {
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  width: 80%;
+
+  &:focus {
+    box-shadow: initial;
+  }
+}
+
+.partyLinkCopy {
+  display: inline-block;
+  margin-left: 5px;
+  width: calc(20% - 5px);
+
+  &:focus {
+    box-shadow: initial;
+  }
+}

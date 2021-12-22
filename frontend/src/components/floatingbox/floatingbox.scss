@@ -1,0 +1,30 @@
+.verticalCenterWrapper {
+  display: table;
+  height: 100%;
+  min-height: 100vh; /* TODO WEIRD SHIT */
+  width: 100%;
+}
+
+.verticalCenter {
+  display: table-cell;
+  width: 100%;
+
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.floatingBox {
+  position: relative;
+  margin: 0 auto;
+
+  border: 1px solid #3c3c3c;
+  border-radius: 3px;
+  background-color: #4c4c4c;
+
+  width: 400px;
+  max-width: 90vw;
+  min-height: 600px;
+
+  padding: 25px;
+  text-align: center;
+}
