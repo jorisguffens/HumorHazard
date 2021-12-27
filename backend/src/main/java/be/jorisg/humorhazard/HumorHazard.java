@@ -4,6 +4,7 @@ import be.jorisg.humorhazard.data.Error;
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.game.Game;
+import be.jorisg.humorhazard.data.game.GamePlayer;
 import be.jorisg.humorhazard.data.game.Round;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.data.party.PartySettings;
@@ -66,6 +67,7 @@ public class HumorHazard {
         module.addSerializer(Game.class, new GameSerializer());
         module.addSerializer(Round.class, new RoundSerializer());
         module.addSerializer(Error.class, new ErrorSerializer());
+        module.addSerializer(GamePlayer.class, new GamePlayerSerializer());
 
         objectMapper.registerModule(module);
 

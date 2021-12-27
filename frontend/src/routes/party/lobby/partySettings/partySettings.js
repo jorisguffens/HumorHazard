@@ -78,7 +78,7 @@ export default function PartySettings() {
                 </Grid>
                 <Grid item xs={6}>
                     <Select
-                        value={settings.timer_duration_multiplier} InputLabelProps={{shrink: false}}
+                        value={settings.timer_duration_multiplier} componentsProps={{Input: {InputLabelProps: {shrink: false}}}}
                         label="" disabled={disabled} onChange={(e) => update("timer_duration_multiplier", e.target.value)}
                     >
                         <MenuItem value={0}>Disabled</MenuItem>

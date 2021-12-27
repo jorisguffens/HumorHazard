@@ -19,7 +19,9 @@ public class PartySerializer extends StdSerializer<Party> {
         gen.writeStringField("id", value.id());
         gen.writeObjectField("settings", value.settings());
         gen.writeObjectField("players", value.players());
-        gen.writeObjectField("game_started", value.game() != null);
+        if ( value.game() != null ) {
+            gen.writeObjectField("game", value.game());
+        }
         gen.writeEndObject();
     }
 }

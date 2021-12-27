@@ -3,6 +3,7 @@ package be.jorisg.humorhazard.listeners;
 import be.jorisg.humorhazard.Server;
 import be.jorisg.humorhazard.data.Error;
 import be.jorisg.humorhazard.data.Player;
+import be.jorisg.humorhazard.data.game.Game;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.netty.ChannelHandler;
 import be.jorisg.humorhazard.packets.AbstractPacketListener;
@@ -37,7 +38,9 @@ public class PartyStartGamePacketListener extends AbstractPacketListener {
         }
 
         party.start();
+
         server.send(party.players(), PacketType.PARTY_UPDATE, party);
+        party.game().participants().forEach((p, gp) -> server.send(p, PacketType.GAME_HAND_UPDATE, gp.hand()));
     }
 
 }

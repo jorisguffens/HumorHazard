@@ -9,7 +9,7 @@ public class PartySettings {
 
     private int scoreLimit = 5;
     private int playerLimit = 10;
-    private int timeMultiplier = 1;
+    private int timerDurationMultiplier = 1;
 
     public boolean isVisible() {
         return visible;
@@ -35,11 +35,11 @@ public class PartySettings {
         this.playerLimit = playerLimit;
     }
 
-    public int timeMultiplier() {
-        return timeMultiplier;
+    public int timerDurationMultiplier() {
+        return timerDurationMultiplier;
     }
 
-    public void setTimeMultiplier(int timeMultiplier) {
-        this.timeMultiplier = timeMultiplier;
+    public void setTimerDurationMultiplier(int timerDurationMultiplier) {
+        this.timerDurationMultiplier = timerDurationMultiplier;
     }
 }

@@ -19,7 +19,7 @@ public class PartySettingsSerializer extends StdSerializer<PartySettings> {
         gen.writeBooleanField("visible", value.isVisible());
         gen.writeNumberField("player_limit", value.playerLimit());
         gen.writeNumberField("score_limit", value.scoreLimit());
-        gen.writeNumberField("time_multiplier", value.timeMultiplier());
+        gen.writeNumberField("timer_duration_multiplier", value.timerDurationMultiplier());
         gen.writeEndObject();
     }
 }

@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import PlayerList from "../playerlist/playerlist";
 import Hand from "../hand/hand";
-import Card from "../card/card";
+import Card from "../../routes/party/game/card/card";
 import Picks from "../picks/picks";
 import PartyLink from "../../common/partylink/partylink";
 import Chat from "../chat/chat";

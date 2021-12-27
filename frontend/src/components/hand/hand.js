@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 
 import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
-import Card from "../card/card";
+import Card from "../../routes/party/game/card/card";
 
 import style from "./hand.scss";
 import {Button} from "@mui/material";

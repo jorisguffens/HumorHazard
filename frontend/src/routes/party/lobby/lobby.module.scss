@@ -6,3 +6,17 @@
 .subTitle {
   text-align: center;
 }
+
+.playersWrapper {
+  display: flex;
+  flex-direction: column !important;
+}
+
+.playersList {
+  flex: 1 auto;
+}
+
+.playersActions {
+  margin-top: 35px;
+  text-align: center;
+}

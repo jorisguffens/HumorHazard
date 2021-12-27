@@ -27,8 +27,9 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
 
         Party party = server.partyById(payload.get("party").asText());
         if ( party == null ) {
-            respond.accept(type, new Error("Party does not exist."));
-            return;
+            party = server.createParty(payload.get("party").asText());
+//            respond.accept(type, new Error("Party does not exist."));
+//            return;
         }
 
         if ( party.players().contains(player) ) {

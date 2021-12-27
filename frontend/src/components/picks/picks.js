@@ -5,7 +5,7 @@ import clsx from "clsx";
 import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import style from "./picks.scss";
-import Card from "../card/card";
+import Card from "../../routes/party/game/card/card";
 import {Button} from "@mui/material";
 
 function Picks({ player, game, round }) {

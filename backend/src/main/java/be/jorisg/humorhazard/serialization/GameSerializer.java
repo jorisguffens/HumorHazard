@@ -18,6 +18,8 @@ public class GameSerializer extends StdSerializer<Game> {
         gen.writeStartObject();
         gen.writeNumberField("round_number", value.roundNumber());
         gen.writeObjectField("round", value.round());
+        gen.writeObjectField("spectators", value.spectators());
+        gen.writeObjectField("participants", value.participants());
         gen.writeEndObject();
     }
 }

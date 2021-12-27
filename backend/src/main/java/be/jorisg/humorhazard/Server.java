@@ -126,6 +126,13 @@ public class Server {
         do {
             id = this.letter + RandomStringUtils.randomAlphanumeric(6).toUpperCase();
         } while (partyById(id) != null);
+        return createParty(id);
+    }
+
+    public Party createParty(String id) {
+        if ( partyById(id) != null ) {
+            throw new IllegalArgumentException("A party with that id already exists!");
+        }
 
         Party party = new Party(id);
         parties.put(id, party);

@@ -1,7 +1,7 @@
 package be.jorisg.humorhazard.packets;
 
 public enum PacketType {
-    // INBOUND
+    // --- INBOUND ---
 
     // auth
     REGISTER, LOGIN,
@@ -15,6 +15,11 @@ public enum PacketType {
     // players
     PICK_CARD, SEND_MESSAGE,
 
-    // OUTBOUND
-    PARTY_UPDATE, PARTY_UPDATE_SETTINGS, PARTY_UPDATE_GAME, PARTY_UPDATE_ROUND;
+    // --- OUTBOUND ---
+
+    // party
+    PARTY_UPDATE, PARTY_UPDATE_SETTINGS,
+
+    // game
+    GAME_UPDATE, GAME_ROUND_UPDATE, GAME_HAND_UPDATE;
 }

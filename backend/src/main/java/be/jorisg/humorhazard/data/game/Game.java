@@ -14,7 +14,7 @@ public class Game {
     private final Set<Player> pastJudges = new HashSet<>();
 
     private final Set<Player> spectators = new HashSet<>();
-    private final Map<Player, GamePlayer> participants = new TreeMap<>();
+    private final Map<Player, GamePlayer> participants = new LinkedHashMap<>();
 
     private final Deck deck;
 
@@ -38,8 +38,8 @@ public class Game {
         return Collections.unmodifiableSet(spectators);
     }
 
-    public Set<Player> participants() {
-        return Collections.unmodifiableSet(participants.keySet());
+    public Map<Player, GamePlayer> participants() {
+        return Collections.unmodifiableMap(participants);
     }
 
     public void removePlayer(Player player) {

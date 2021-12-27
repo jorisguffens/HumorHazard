@@ -32,9 +32,21 @@ export function useDispatchPartySettings() {
     const dispatch = useDispatch();
     return useCallback((settings) => {
         dispatch({
-            type: "PARTY",
+            type: "PARTY_SETTINGS",
             action: (state) => {
                 return {...state, party: {...state.party, settings}}
+            }
+        });
+    }, [dispatch]);
+}
+
+export function useDispatchPartyGame() {
+    const dispatch = useDispatch();
+    return useCallback((game) => {
+        dispatch({
+            type: "PARTY_GAME",
+            action: (state) => {
+                return {...state, party: {...state.party, game}}
             }
         });
     }, [dispatch]);
@@ -53,6 +65,42 @@ export function useDispatchQuit() {
     }, [dispatch]);
 }
 
+export function useDispatchGame() {
+    const dispatch = useDispatch();
+    return useCallback((game) => {
+        dispatch({
+            type: "GAME",
+            action: (state) => {
+                return {...state, party: {...state.party, game}}
+            }
+        });
+    }, [dispatch]);
+}
+
+export function useDispatchGameHand() {
+    const dispatch = useDispatch();
+    return useCallback((hand) => {
+        dispatch({
+            type: "GAME_HAND",
+            action: (state) => {
+                return {...state, hand}
+            }
+        });
+    }, [dispatch]);
+}
+
+export function useDispatchGameRound() {
+    const dispatch = useDispatch();
+    return useCallback((round) => {
+        dispatch({
+            type: "GAME_ROUND",
+            action: (state) => {
+                return {...state, party: {...state.party, game: {...state.party.game, round}}}
+            }
+        });
+    }, [dispatch]);
+}
+
 // -------------------
 
 export function usePlayer() {
@@ -64,11 +112,19 @@ export function useParty() {
 }
 
 export function usePartyPlayers() {
-    return useSelector((state) => state.party.players);
+    return useSelector((state) => state.party && state.party.players);
 }
 
 export function usePartySettings() {
-    return useSelector((state) => state.party.settings);
+    return useSelector((state) => state.party && state.party.settings);
+}
+
+export function usePartyGame() {
+    return useSelector((state) => state.party && state.party.game);
+}
+
+export function useGameHand() {
+    return useSelector((state) => state.hand);
 }
 
 

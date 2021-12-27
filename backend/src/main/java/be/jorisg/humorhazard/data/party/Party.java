@@ -3,6 +3,7 @@ package be.jorisg.humorhazard.data.party;
 import be.jorisg.humorhazard.data.card.Deck;
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.game.Game;
+import be.jorisg.humorhazard.util.CardLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class Party {
     private final List<Player> players = new ArrayList<>();
     private Game game = null;
 
-    private Deck deck;
+    private final Deck deck = new Deck(CardLoader.load());
 
     public Party(String id) {
         this.id = id;
@@ -71,6 +72,9 @@ public class Party {
         }
 
         this.game = new Game(deck);
+        players.forEach(p -> game.addSpectator(p));
+
+        this.game.nextRound();
     }
 
 }
