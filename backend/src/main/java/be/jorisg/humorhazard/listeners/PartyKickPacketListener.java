@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class StartGamePacketListener extends AbstractPacketListener {
+public class PartyKickPacketListener extends AbstractPacketListener {
 
-    public StartGamePacketListener(Server server) {
+    public PartyKickPacketListener(Server server) {
         super(server);
     }
 
@@ -36,8 +36,22 @@ public class StartGamePacketListener extends AbstractPacketListener {
             return;
         }
 
-        party.start();
-        server.send(party.players(), PacketType.UPDATE_PARTY, party);
+        if ( !payload.has("player_id") ) {
+            respond.accept(type, new Error("No player given."));
+            return;
+        }
+
+        Player target = server.playerById(payload.get("player_id").asText());
+        if ( target == null || server.partyByPlayer(target) != party ) {
+            respond.accept(type, new Error("That player is not in your party."));
+            return;
+        }
+
+        party.removePlayer(target);
+        respond.accept(type, null);
+
+        server.send(target, PacketType.PARTY_KICK);
+        server.send(party.players(), PacketType.PARTY_UPDATE, party);
     }
 
 }

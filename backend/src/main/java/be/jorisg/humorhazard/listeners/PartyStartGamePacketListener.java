@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class CreatePartyPacketListener extends AbstractPacketListener {
+public class PartyStartGamePacketListener extends AbstractPacketListener {
 
-    public CreatePartyPacketListener(Server server) {
+    public PartyStartGamePacketListener(Server server) {
         super(server);
     }
 
@@ -25,9 +25,19 @@ public class CreatePartyPacketListener extends AbstractPacketListener {
             return;
         }
 
-        Party party = server.createParty();
-        party.addPlayer(player);
-        respond.accept(type, party);
+        Party party = server.partyByPlayer(player);
+        if ( party == null ) {
+            respond.accept(type, new Error("You are not in a party."));
+            return;
+        }
+
+        if ( !party.leader().equals(player) ) {
+            respond.accept(type, new Error("You are not the party leader."));
+            return;
+        }
+
+        party.start();
+        server.send(party.players(), PacketType.PARTY_UPDATE, party);
     }
 
 }

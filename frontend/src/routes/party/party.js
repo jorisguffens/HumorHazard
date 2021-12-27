@@ -34,14 +34,14 @@ export default function Party() {
         }
 
         if (!player) {
-            packetHandler.sendc("INFO_PARTY", {party: partyid}).catch(err => {
+            packetHandler.sendc("PARTY_INFO", {party: partyid}).catch(err => {
                 // party doesn't exist
                 navigate("/");
             });
             return;
         }
 
-        packetHandler.sendc("JOIN_PARTY", {party: partyid}).then((party) => {
+        packetHandler.sendc("PARTY_JOIN", {party: partyid}).then((party) => {
             dispatchParty(party);
         }).catch(err => {
             // party doesn't exist
@@ -50,9 +50,8 @@ export default function Party() {
     }, [player, partyid]);
 
     useEffect(() => {
-        const unregister = packetHandler.registerListener((packet) => {
-            if ( packet.type !== "UPDATE_PARTY") return;
-            dispatchParty(packet.payload);
+        const unregister = packetHandler.registerTypeListener("PARTY_UPDATE", (party) => {
+            dispatchParty(party);
         });
         return () => unregister();
     })

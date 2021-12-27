@@ -28,6 +28,18 @@ export function useDispatchParty() {
     }, [dispatch]);
 }
 
+export function useDispatchPartySettings() {
+    const dispatch = useDispatch();
+    return useCallback((settings) => {
+        dispatch({
+            type: "PARTY",
+            action: (state) => {
+                return {...state, party: {...state.party, settings}}
+            }
+        });
+    }, [dispatch]);
+}
+
 export function useDispatchQuit() {
     const dispatch = useDispatch();
     return useCallback(() => {
@@ -53,6 +65,10 @@ export function useParty() {
 
 export function usePartyPlayers() {
     return useSelector((state) => state.party.players);
+}
+
+export function usePartySettings() {
+    return useSelector((state) => state.party.settings);
 }
 
 

@@ -19,7 +19,7 @@ export default function Landing() {
     const navigate = useNavigate();
 
     const create = useCallback(() => {
-        packetHandler.sendc("CREATE_PARTY").then((party) => {
+        packetHandler.sendc("PARTY_CREATE").then((party) => {
             dispatchParty(party);
             navigate("/" + party.id);
         }).catch(err => {

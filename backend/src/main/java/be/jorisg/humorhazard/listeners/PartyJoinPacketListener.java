@@ -11,21 +11,40 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class InfoPartyPacketListener extends AbstractPacketListener {
+public class PartyJoinPacketListener extends AbstractPacketListener {
 
-    public InfoPartyPacketListener(Server server) {
+    public PartyJoinPacketListener(Server server) {
         super(server);
     }
 
     @Override
     public void onReceive(ChannelHandler ch, PacketType type, JsonNode payload, BiConsumer<PacketType, Object> respond) {
+        Player player = server.playerByConnection(ch);
+        if (player == null) {
+            respond.accept(type, new Error("Something went wrong."));
+            return;
+        }
+
         Party party = server.partyById(payload.get("party").asText());
         if ( party == null ) {
             respond.accept(type, new Error("Party does not exist."));
             return;
         }
 
+        if ( party.players().contains(player) ) {
+            respond.accept(type, party);
+            return;
+        }
+
+        if ( party.players().size() >= party.settings().playerLimit() ) {
+            respond.accept(type, new Error("Party is fulll"));
+            return;
+        }
+
+        party.addPlayer(player);
         respond.accept(type, party);
+
+        server.send(party.players(), PacketType.PARTY_UPDATE, party);
     }
 
 }

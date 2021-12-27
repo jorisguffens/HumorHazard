@@ -37,7 +37,10 @@ public class PacketHandler {
         BiConsumer<PacketType, Object> respond = (t, pl) -> {
             ObjectNode pt = HumorHazard.objectMapper.createObjectNode();
             pt.set("type", HumorHazard.objectMapper.valueToTree(type));
-            pt.set("payload", HumorHazard.objectMapper.valueToTree(pl));
+
+            if ( pl != null ) {
+                pt.set("payload", HumorHazard.objectMapper.valueToTree(pl));
+            }
 
             if ( packet.has("callback") ){
                 pt.set("callback", packet.get("callback"));

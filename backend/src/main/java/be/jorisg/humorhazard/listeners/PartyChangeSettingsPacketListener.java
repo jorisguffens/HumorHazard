@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class ChangeSettingsPacketListener extends AbstractPacketListener {
+public class PartyChangeSettingsPacketListener extends AbstractPacketListener {
 
-    public ChangeSettingsPacketListener(Server server) {
+    public PartyChangeSettingsPacketListener(Server server) {
         super(server);
     }
 
@@ -55,10 +55,10 @@ public class ChangeSettingsPacketListener extends AbstractPacketListener {
             }
         }
 
-        if ( payload.has("time_muliplier")  ) {
-            int multiplier = payload.get("time_muliplier").asInt();
+        if ( payload.has("timer_duration_multiplier")  ) {
+            int multiplier = payload.get("timer_duration_multiplier").asInt();
             if ( multiplier >= 0 && multiplier <= 8 ) {
-                party.settings().setTimeMultiplier(multiplier);
+                party.settings().setTimerDurationMultiplier(multiplier);
             }
         }
 
@@ -67,7 +67,7 @@ public class ChangeSettingsPacketListener extends AbstractPacketListener {
             party.settings().setVisible(visible);
         }
 
-        server.send(party.players(), PacketType.UPDATE_PARTY, party);
+        server.send(party.players(), PacketType.PARTY_UPDATE_SETTINGS, party.settings());
     }
 
 }

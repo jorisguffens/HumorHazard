@@ -63,6 +63,14 @@ function PacketHandler(uri, onopen) {
         });
     }
 
+    this.registerTypeListener = function(type, func) {
+        if ( typeof func !== "function" ) return;
+        return this.registerListener((packet) => {
+            if ( packet.type !== type ) return;
+            func(packet.payload);
+        })
+    }
+
     this.registerListener = function(func) {
         if ( typeof func !== "function" ) return;
 

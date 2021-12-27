@@ -32,6 +32,20 @@ export default createTheme({
                     }
                 }
             }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                input: {
+                    padding: "8px 15px"
+                }
+            }
+        },
+        MuiSwitch: {
+            styleOverrides: {
+                root: {
+                    transform: "translateX(-12px)"
+                }
+            }
         }
     }
 });
