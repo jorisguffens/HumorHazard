@@ -2,14 +2,14 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, useNavigate} from "react-router-dom";
 
-import {useSocketHandler} from "../../socket/handler";
+import {usePacketHandler} from "../../socket/packetHandler";
 
 import style from "./partylist.scss";
 import {Button, Grid} from "@mui/material";
 
 function Partylist({ partylist }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
     const navigate = useNavigate();
 
     // remove party id from url

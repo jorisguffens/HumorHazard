@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class QuitPacketListener extends AbstractPacketListener {
+public class QuitPartyPacketListener extends AbstractPacketListener {
 
-    public QuitPacketListener(Server server) {
+    public QuitPartyPacketListener(Server server) {
         super(server);
     }
 

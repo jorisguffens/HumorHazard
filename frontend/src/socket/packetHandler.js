@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {createContext, useContext, useEffect, useState} from 'react';
 import {Socket} from "./socket";
 import {v4 as uuidv4} from "uuid";
 
@@ -10,7 +10,7 @@ function createPacket(type, payload) {
     return packet;
 }
 
-function Handler(uri) {
+function PacketHandler(uri, onopen) {
 
     const callbacks = {};
     const listeners = [];
@@ -27,6 +27,10 @@ function Handler(uri) {
                 listeners[i](json);
             }
         }
+    });
+
+    socket.registerListener('open', () => {
+        if ( onopen ) onopen(this);
     })
 
     this.send = function(type, payload) {
@@ -75,38 +79,24 @@ function Handler(uri) {
 
 }
 
-let handler;
-let handlerSubscribers = [];
+const PacketHandlerContext = createContext(null);
+export function PacketHandlerProvider({children}) {
 
-export function connect(partyid) {
-    fetch("/config.json").then(res => {
-        return res.json();
-    }).then(json => {
-        const servers = json['servers'];
-
-        if ( partyid == null ) {
-            handler = new Handler(Object.values(servers)[0]);
-            handlerSubscribers.forEach(item => item(handler));
-            return;
-        }
-
-        for ( let letter of Object.keys(servers) ) {
-            if ( !partyid.startsWith(letter) ) continue;
-            handler = new Handler(servers[letter]);
-            handlerSubscribers.forEach(item => item(handler));
-            return
-        }
-    });
-}
-
-export function useSocketHandler() {
-    const [handler, setHandler] = useState();
+    const [value, setValue] = useState(null);
 
     useEffect(() => {
-        const func = (h) => setHandler(h);
-        handlerSubscribers.push(func)
-        return () => handlerSubscribers = handlerSubscribers.filter(f => f !== func);
-    }, []);
+        new PacketHandler(process.env.REACT_APP_WS, (handler) => {
+            setValue(handler);
+        })
+    }, [])
 
-    return handler;
+    return (
+        <PacketHandlerContext.Provider value={value}>
+            {children}
+        </PacketHandlerContext.Provider>
+    )
+}
+
+export function usePacketHandler() {
+    return useContext(PacketHandlerContext);
 }

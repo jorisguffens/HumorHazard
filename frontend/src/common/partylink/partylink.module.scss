@@ -1,0 +1,15 @@
+.wrapper {
+  padding: 5px;
+  flex-direction: row !important;
+
+  & :first-child {
+    flex: 1 0 auto;
+    margin-right: 5px;
+  }
+
+  & input {
+    padding: 8px 15px;
+    overflow-x: hidden;
+    width: auto;
+  }
+}

@@ -2,14 +2,14 @@ import React from "react";
 import {connect} from "react-redux";
 import clsx from "clsx";
 
-import {createPacket, useSocketHandler} from "../../socket/handler";
+import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import style from "./gamesettings.scss";
 import {Checkbox, FormGroup, FormLabel, Grid, TextField} from "@mui/material";
 
 function GameSettings({player, party}) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     const [publicGame, setPublicGame] = React.useState(false);
     const [scoreLimit, setScoreLimit] = React.useState(8);

@@ -5,12 +5,12 @@ import FloatingBox from "../floatingbox/floatingbox";
 import logo from "../../assets/img/logo.png";
 
 import style from "./register.scss";
-import {useSocketHandler} from "../../socket/handler";
+import {usePacketHandler} from "../../socket/packetHandler";
 import {Button, FormGroup, FormLabel, TextField} from "@mui/material";
 
 export default function Register({ partyid }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     const [name, setName] = React.useState("");
     const [submit, setSubmit] = React.useState(false);

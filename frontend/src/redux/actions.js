@@ -1,4 +1,4 @@
-import {store} from '../redux/store';
+import {store} from './store';
 import uuid from "uuid";
 
 export const SET_CONNECTED = "SET_CONNECTED";
@@ -140,3 +140,6 @@ export function kicked() {
         type: KICKED
     });
 }
+
+
+

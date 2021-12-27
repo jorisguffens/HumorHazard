@@ -2,10 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import clsx from "clsx";
 
-import {createPacket, useSocketHandler} from "../../socket/handler";
+import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import FloatingBox from "../floatingbox/floatingbox";
-import PartyLink from "../partylink/partylink";
+import PartyLink from "../../common/partylink/partylink";
 import GameSettings from "../gamesettings/gamesettings";
 
 import style from "./lobby.scss";
@@ -14,7 +14,7 @@ import {Button, Grid} from "@mui/material";
 
 function Lobby({player, party}) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     function startGame() {
         socketHandler.send(createPacket("StartGame", null));

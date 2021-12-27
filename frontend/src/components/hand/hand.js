@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import {connect} from "react-redux";
 
-import {createPacket, useSocketHandler} from "../../socket/handler";
+import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import Card from "../card/card";
 
@@ -11,7 +11,7 @@ import {Button} from "@mui/material";
 
 function Hand({ player, game, round, hand, complete }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     const [roundNumber, setRoundNumber] = React.useState(-1);
     const [picked, setPicked] = React.useState(null);

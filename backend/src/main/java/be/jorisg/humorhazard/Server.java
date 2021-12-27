@@ -41,12 +41,13 @@ public class Server {
         PacketHandler packetHandler = new PacketHandler();
         packetHandler.register(PacketType.REGISTER, new RegisterPacketListener(this));
         packetHandler.register(PacketType.LOGIN, new LoginPacketListener(this));
-        packetHandler.register(PacketType.CREATE, new CreatePacketListener(this));
-        packetHandler.register(PacketType.JOIN, new JoinPacketListener(this));
-        packetHandler.register(PacketType.QUIT, new QuitPacketListener(this));
+        packetHandler.register(PacketType.CREATE_PARTY, new CreatePartyPacketListener(this));
+        packetHandler.register(PacketType.JOIN_PARTY, new JoinPartyPacketListener(this));
+        packetHandler.register(PacketType.QUIT_PARTY, new QuitPartyPacketListener(this));
         packetHandler.register(PacketType.CHANGE_SETTINGS, new ChangeSettingsPacketListener(this));
         packetHandler.register(PacketType.KICK, new KickPacketListener(this));
         packetHandler.register(PacketType.START_GAME, new StartGamePacketListener(this));
+        packetHandler.register(PacketType.INFO_PARTY, new InfoPartyPacketListener(this));
 
         NettyServer nettyServer = new NettyServer(scheduler, packetHandler, url, host, port);
         nettyServer.start();
@@ -123,7 +124,7 @@ public class Server {
     public Party createParty() {
         String id;
         do {
-            id = this.letter + RandomStringUtils.randomAlphanumeric(6);
+            id = this.letter + RandomStringUtils.randomAlphanumeric(6).toUpperCase();
         } while (partyById(id) != null);
 
         Party party = new Party(id);
@@ -190,6 +191,10 @@ public class Server {
 
     public void send(ChannelHandler ch, PacketType type) {
         send(ch, type, null);
+    }
+
+    public void sendParty(Party party) {
+        party.players().forEach(p -> send(p, PacketType.UPDATE_PARTY, party));
     }
 
 }

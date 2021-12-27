@@ -1,7 +1,8 @@
 import {useCallback, useState} from "react";
 
 import {Container, FormLabel, Link, Paper, TextField, Typography} from "@mui/material";
-import {useSocketHandler} from "../../socket/handler";
+import {usePacketHandler} from "../../socket/packetHandler";
+import {useDispatchLogin} from "../../redux/hooks";
 
 import Center from "../../common/center/center";
 
@@ -11,20 +12,21 @@ import style from "./register.module.scss";
 
 export default function Register() {
 
-    const socketHandler = useSocketHandler();
+    const dispatchLogin = useDispatchLogin();
+    const packetHandler = usePacketHandler();
+
     const [name, setName] = useState("");
 
     const submit = useCallback((e) => {
         e.preventDefault();
-        if ( !name ) return;
+        if (!name) return;
 
-        console.log("submitted");
-        socketHandler.sendc("REGISTER", { name }).then((res) => {
-            console.log(res)
+        packetHandler.sendc("REGISTER", {name}).then((player) => {
+            dispatchLogin(player);
         }).catch(err => {
             console.error(err);
         })
-    }, [name]);
+    }, [name, packetHandler, dispatchLogin]);
 
     return (
         <Center>

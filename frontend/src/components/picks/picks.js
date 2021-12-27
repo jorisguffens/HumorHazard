@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import clsx from "clsx";
 
-import {createPacket, useSocketHandler} from "../../socket/handler";
+import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import style from "./picks.scss";
 import Card from "../card/card";
@@ -10,7 +10,7 @@ import {Button} from "@mui/material";
 
 function Picks({ player, game, round }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     if ( round.status === "picking" ) {
         const cards = [];

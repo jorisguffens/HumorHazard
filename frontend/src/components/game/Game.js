@@ -6,7 +6,7 @@ import PlayerList from "../playerlist/playerlist";
 import Hand from "../hand/hand";
 import Card from "../card/card";
 import Picks from "../picks/picks";
-import PartyLink from "../partylink/partylink";
+import PartyLink from "../../common/partylink/partylink";
 import Chat from "../chat/chat";
 
 import style from './game.scss';

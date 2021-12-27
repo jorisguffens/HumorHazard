@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.function.BiConsumer;
 
-public class JoinPacketListener extends AbstractPacketListener {
+public class CreatePartyPacketListener extends AbstractPacketListener {
 
-    public JoinPacketListener(Server server) {
+    public CreatePartyPacketListener(Server server) {
         super(server);
     }
 
@@ -25,22 +25,9 @@ public class JoinPacketListener extends AbstractPacketListener {
             return;
         }
 
-        Party party = server.partyById(payload.get("party").asText());
-        if ( party == null ) {
-            respond.accept(type, new Error("Party does not exist."));
-            return;
-        }
-
-        if ( party.players().size() >= party.settings().playerLimit() ) {
-            respond.accept(type, new Error("Party is fulll"));
-            return;
-        }
-
+        Party party = server.createParty();
         party.addPlayer(player);
         respond.accept(type, party);
-
-        party.players().forEach(p -> server.send(p, PacketType.UPDATE_PARTY, party));
-        party.players().forEach(p -> server.send(p, PacketType.UPDATE_GAME, party.game()));
     }
 
 }

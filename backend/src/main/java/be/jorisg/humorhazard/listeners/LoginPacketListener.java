@@ -44,11 +44,6 @@ public class LoginPacketListener extends AbstractPacketListener {
 
         server.connect(player, ch);
         respond.accept(type, player);
-
-        Party party = server.partyByPlayer(player);
-        if ( party != null ) {
-            server.send(player, PacketType.UPDATE_PARTY, party);
-        }
     }
 
 }

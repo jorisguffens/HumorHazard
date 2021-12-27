@@ -7,7 +7,7 @@ public enum PacketType {
     REGISTER, LOGIN,
 
     // party
-    JOIN,QUIT,CREATE,
+    JOIN_PARTY, QUIT_PARTY, CREATE_PARTY,INFO_PARTY,
 
     // party owner
     START_GAME, CHANGE_SETTINGS, KICK,

@@ -2,7 +2,7 @@ import React from "react";
 import {useSelector} from "react-redux";
 import {Route, Routes, useNavigate, useParams} from "react-router-dom";
 
-import {createHandler, useSocketHandler} from "../socket/handler";
+import {createHandler, usePacketHandler} from "../socket/packetHandler";
 
 import Party from "./party/party";
 import Loader from "./loader/loader";
@@ -14,7 +14,7 @@ export default function HumorHazard() {
     const navigate = useNavigate();
     const partyid = useParams()["party"];
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
     const party = useSelector((state) => state.party);
     const isConnected = useSelector(state => state.isConnected);
 

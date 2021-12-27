@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 
-import {useSocketHandler} from "../../socket/handler";
+import {usePacketHandler} from "../../socket/packetHandler";
 
 import Register from "../register/register";
 import Lobby from "../lobby/lobby";
@@ -11,7 +11,7 @@ import Loader from "../loader/loader";
 
 function Party({ player, party }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
     const navigate = useNavigate();
 
     const partyid = useParams()["party"];

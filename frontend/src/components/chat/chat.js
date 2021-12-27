@@ -1,14 +1,14 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import {createPacket, useSocketHandler} from "../../socket/handler";
+import {createPacket, usePacketHandler} from "../../socket/packetHandler";
 
 import style from "./chat.scss";
 import {Button, FormGroup, TextField} from "@mui/material";
 
 function Chat({ messages, height }) {
 
-    const socketHandler = useSocketHandler();
+    const socketHandler = usePacketHandler();
 
     const initialRender = React.useRef(true);
     const wasVisible = React.useRef(false);

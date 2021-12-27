@@ -1,14 +1,12 @@
 import React from 'react';
 import {Provider} from "react-redux";
 
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import {ThemeProvider} from "@mui/material";
+import {PacketHandlerProvider} from "../socket/packetHandler";
 
 import store from "../redux/store";
 import theme from "./theme";
-
-import Notifications from "../components/notifications/notifications";
-import Broadcast from "../components/broadcast/broadcast";
-import Router from "./router";
+import Handler from "./handler";
 
 export default function App() {
 
@@ -21,12 +19,11 @@ export default function App() {
     return (
         <Provider store={store}>
             <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <Broadcast/>
-                <Notifications/>
-
-                <Router/>
+                <PacketHandlerProvider>
+                    <Handler/>
+                </PacketHandlerProvider>
             </ThemeProvider>
         </Provider>
-    );
+    )
 }
+
