@@ -9,15 +9,10 @@ import be.jorisg.humorhazard.data.game.Round;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.data.party.PartySettings;
 import be.jorisg.humorhazard.serialization.*;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * Created by Joris on 3/04/2020 in project HumorHazard.
@@ -29,35 +24,16 @@ public class HumorHazard {
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static void main(String[] args) {
+        String host = "0.0.0.0";
 
-        if (args.length == 0) {
-            logger.error("Invalid amount of arguments. Shutting down.");
-            return;
+        int port = 80;
+        if (System.getenv().containsKey("PORT")) {
+            port = Integer.parseInt(System.getenv("PORT"));
         }
 
-        File settingsFile = new File(args[0]);
-        if (!settingsFile.exists()) {
-            logger.error("Settings file not found. Shutting down.");
-            return;
-        }
+        String letter = System.getenv("LETTER_PREFIX");
+        String url = System.getenv("WEBSOCKET_URL");
 
-        JsonNode settings;
-        try (FileReader reader = new FileReader(settingsFile)) {
-            settings = objectMapper.readTree(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        if (!settings.has("host") || !settings.has("port")) {
-            logger.error("Settings file does not contain host and port.");
-            return;
-        }
-
-        if (!settings.has("letter")) {
-            logger.error("Settings file does not contain letter");
-            return;
-        }
 
         SimpleModule module = new SimpleModule("Serializers");
         module.addSerializer(Player.class, new PlayerSerializer());
@@ -71,12 +47,7 @@ public class HumorHazard {
 
         objectMapper.registerModule(module);
 
-        Server server = new Server(
-                settings.get("letter").asText(),
-                settings.get("url").asText(),
-                settings.get("host").asText(),
-                settings.get("port").asInt()
-        );
+        Server server = new Server(letter, url, host, port);
     }
 
 }
