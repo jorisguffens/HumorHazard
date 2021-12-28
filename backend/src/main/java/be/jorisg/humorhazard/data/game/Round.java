@@ -4,8 +4,7 @@ import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.card.CardType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Joris on 14/04/2020 in project HumorHazardServer.
@@ -17,7 +16,9 @@ public class Round {
     private final Player judge;
     private Card[] startCards;
 
-    public Map<Player, Card[]> picks = new HashMap<>();
+    private RoundStatus status = RoundStatus.FILLING;
+    private Map<Player, Card[]> picks = new HashMap<>();
+    private Player winner = null;
 
     public Round(Player judge, Card startCard) {
         this.judge = judge;
@@ -33,12 +34,24 @@ public class Round {
         return judge;
     }
 
+    public RoundStatus status() {
+        return status;
+    }
+
     public Card[] startCards() {
         return startCards;
     }
 
     public Card[][] pickedCards() {
         return picks.values().toArray(new Card[0][0]);
+    }
+
+    public Set<Player> pickedPlayers() {
+        return Collections.unmodifiableSet(picks.keySet());
+    }
+
+    public Map<Player, Card[]> picks() {
+        return Collections.unmodifiableMap(picks);
     }
 
     public void setJudgeCard(Card card, boolean before) {
@@ -51,6 +64,25 @@ public class Round {
 
     public void setPlayerCards(Player player, Card[] cards) {
         picks.put(player, cards);
+    }
+
+    public void changeStatus(RoundStatus status) {
+        this.status = status;
+    }
+
+    public Player winner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
+
+    public enum RoundStatus {
+        FILLING,
+        PICKING,
+        CHOOSING_WINNER,
+        FINISHED
     }
 
 }

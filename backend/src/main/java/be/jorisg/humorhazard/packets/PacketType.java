@@ -13,7 +13,7 @@ public enum PacketType {
     PARTY_START_GAME, PARTY_CHANGE_SETTINGS, PARTY_KICK,
 
     // players
-    PICK_CARD, SEND_MESSAGE,
+    GAME_PICK_CARDS,
 
     // --- OUTBOUND ---
 

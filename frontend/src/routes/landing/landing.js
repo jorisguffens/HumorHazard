@@ -22,9 +22,7 @@ export default function Landing() {
         packetHandler.sendc("PARTY_CREATE").then((party) => {
             dispatchParty(party);
             navigate("/" + party.id);
-        }).catch(err => {
-            console.log(err);
-        })
+        });
     }, [packetHandler])
 
     if (!player) {

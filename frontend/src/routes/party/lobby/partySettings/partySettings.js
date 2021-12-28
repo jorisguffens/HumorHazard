@@ -33,7 +33,7 @@ export default function PartySettings() {
     useEffect(() => {
         if ( disabled ) return;
         const id = setTimeout(() => {
-            packetHandler.send("PARTY_CHANGE_SETTINGS", settings);
+            packetHandler.sendc("PARTY_CHANGE_SETTINGS", settings);
         }, 1000);
         return () => clearTimeout(id);
     }, [disabled, settings]);

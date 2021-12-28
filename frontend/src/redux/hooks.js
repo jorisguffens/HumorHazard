@@ -7,6 +7,7 @@ export function useDispatchLogin() {
         if ( player.token ) {
             sessionStorage.setItem("login_token", player.token);
         }
+        localStorage.setItem("name", player.name);
         dispatch({
             type: "LOGIN",
             action: (state) => {
@@ -119,12 +120,45 @@ export function usePartySettings() {
     return useSelector((state) => state.party && state.party.settings);
 }
 
-export function usePartyGame() {
+export function useGame() {
     return useSelector((state) => state.party && state.party.game);
 }
 
 export function useGameHand() {
     return useSelector((state) => state.hand);
+}
+
+export function useGameRound() {
+    return useSelector((state) => state.party && state.party.game && state.party.game.round);
+}
+
+export function useGameParticipants() {
+    return useSelector((state) => state.party && state.party.game && state.party.game.participants);
+}
+
+export function useGameSpectators() {
+    return useSelector((state) => state.party && state.party.game && state.party.game.spectators);
+}
+
+export function useRoundStatus() {
+    return useGameRound().status;
+}
+
+export function useShouldPickFromHand() {
+    const player = usePlayer();
+    const round = useGameRound();
+    const state = useRoundStatus();
+
+    if ( state === "FILLING" && player.id === round.judge.id ) {
+        return true;
+    }
+
+    if ( state === "PICKING" && player.id !== round.judge.id
+        && round.picked_players.indexOf(player.id) === -1 ) {
+        return true;
+    }
+
+    return false;
 }
 
 

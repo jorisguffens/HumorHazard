@@ -3,8 +3,8 @@ import {Socket} from "./socket";
 import {v4 as uuidv4} from "uuid";
 
 function createPacket(type, payload) {
-    const packet = { type };
-    if ( payload !== null && payload !== undefined ) {
+    const packet = {type};
+    if (payload !== null && payload !== undefined) {
         packet.payload = payload;
     }
     return packet;
@@ -19,26 +19,26 @@ function PacketHandler(uri, onopen) {
     socket.connect();
 
     socket.registerListener('receive', (json) => {
-        if ( json.callback != null && callbacks[json.callback] != null ) {
+        if (json.callback != null && callbacks[json.callback] != null) {
             callbacks[json.callback](json.payload);
             delete callbacks[json.callback];
         } else {
-            for (let i = 0; i < listeners.length; i++ ) {
+            for (let i = 0; i < listeners.length; i++) {
                 listeners[i](json);
             }
         }
     });
 
     socket.registerListener('open', () => {
-        if ( onopen ) onopen(this);
+        if (onopen) onopen(this);
     })
 
-    this.send = function(type, payload) {
+    this.send = function (type, payload) {
         socket.send(createPacket(type, payload));
     };
 
-    this.sendc = function(type, payload) {
-        return new Promise(function(resolve, reject) {
+    this.sendc = function (type, payload) {
+        const promise = new Promise(function (resolve, reject) {
             const func = (json) => {
                 if (json.error) {
                     reject(json.error);
@@ -54,30 +54,34 @@ function PacketHandler(uri, onopen) {
             packet["callback"] = id;
             socket.send(packet);
 
-            setTimeout(function() {
-                if ( callbacks[id] != null ) {
+            setTimeout(function () {
+                if (callbacks[id] != null) {
                     delete callbacks[id];
                     reject("Callback timed out.");
                 }
             }, 3000);
         });
+        promise.catch(err => {
+            console.error(err);
+        })
+        return promise;
     }
 
-    this.registerTypeListener = function(type, func) {
-        if ( typeof func !== "function" ) return;
+    this.registerTypeListener = function (type, func) {
+        if (typeof func !== "function") return;
         return this.registerListener((packet) => {
-            if ( packet.type !== type ) return;
+            if (packet.type !== type) return;
             func(packet.payload);
         })
     }
 
-    this.registerListener = function(func) {
-        if ( typeof func !== "function" ) return;
+    this.registerListener = function (func) {
+        if (typeof func !== "function") return;
 
         listeners.push(func);
-        return function() {
+        return function () {
             let index = listeners.indexOf(func);
-            if ( index !== -1 ) {
+            if (index !== -1) {
                 listeners.splice(index, 1);
                 return true;
             }
@@ -88,6 +92,7 @@ function PacketHandler(uri, onopen) {
 }
 
 const PacketHandlerContext = createContext(null);
+
 export function PacketHandlerProvider({children}) {
 
     const [value, setValue] = useState(null);

@@ -1,0 +1,25 @@
+
+.item {
+  display: flex;
+  font-size: 20px;
+  padding: 5px 10px;
+  height: 70px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #333;
+  }
+}
+
+.self {
+  color: #ff412c;
+}
+
+.itemPlayer {
+  flex: 1 auto;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect} from "react";
 
-import {useDispatchGameHand, useGameHand} from "../../../../redux/hooks";
+import {useDispatchGameHand, useGameHand, useShouldPickFromHand} from "../../../../redux/hooks";
 import {usePacketHandler} from "../../../../socket/packetHandler";
 
 import Card from "../card/card";
@@ -13,6 +13,7 @@ export default function Hand() {
     const packetHandler = usePacketHandler();
 
     const dispatchHand = useDispatchGameHand();
+    const enabled = useShouldPickFromHand();
 
     useEffect(() => {
         const unregister = packetHandler.registerTypeListener("GAME_HAND_UPDATE", (hand) => {
@@ -22,20 +23,19 @@ export default function Hand() {
     }, [packetHandler]);
 
     const select = useCallback((card) => {
-
-    }, [packetHandler]);
+        if ( !enabled ) return;
+        packetHandler.sendc("GAME_PICK_CARDS", { cards: [card.id] });
+    }, [enabled, packetHandler]);
 
     if (!hand) {
         return <p>Loading...</p>
     }
 
-    console.log(hand);
-
     return (
         <div className={style.hand}>
             {hand.map((card, i) => (
                 <div key={i} className={style.card}>
-                    <Card card={card} onClick={() => select(card)}/>
+                    <Card card={card} onClick={() => select(card)} disabled={!enabled}/>
                 </div>
             ))}
         </div>

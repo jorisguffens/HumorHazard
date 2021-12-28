@@ -3,6 +3,7 @@ package be.jorisg.humorhazard.listeners;
 import be.jorisg.humorhazard.Server;
 import be.jorisg.humorhazard.data.Error;
 import be.jorisg.humorhazard.data.Player;
+import be.jorisg.humorhazard.data.game.GamePlayer;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.netty.ChannelHandler;
 import be.jorisg.humorhazard.packets.AbstractPacketListener;
@@ -34,6 +35,7 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
 
         if ( party.players().contains(player) ) {
             respond.accept(type, party);
+            update(player, party);
             return;
         }
 
@@ -43,9 +45,23 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
         }
 
         party.addPlayer(player);
-        respond.accept(type, party);
-
         server.send(party.players(), PacketType.PARTY_UPDATE, party);
+
+        respond.accept(type, party);
+        update(player, party);
+    }
+
+    private void update(Player player, Party party) {
+        if ( party.game() == null  ) {
+            return;
+        }
+
+        GamePlayer gp = party.game().participants().get(player);
+        if ( gp == null ) {
+            return;
+        }
+
+        server.send(player, PacketType.GAME_HAND_UPDATE, gp.hand());
     }
 
 }

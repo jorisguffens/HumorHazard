@@ -1,11 +1,13 @@
 package be.jorisg.humorhazard.data.party;
 
+import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.card.Deck;
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.game.Game;
 import be.jorisg.humorhazard.util.CardLoader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,10 +22,12 @@ public class Party {
     private final List<Player> players = new ArrayList<>();
     private Game game = null;
 
-    private final Deck deck = new Deck(CardLoader.load());
+    private final Deck deck;
 
-    public Party(String id) {
+    public Party(String id, Collection<Card> cards) {
         this.id = id;
+        this.deck = new Deck(cards);
+        this.deck.shuffle();
     }
 
     public String id() {
@@ -47,6 +51,10 @@ public class Party {
     }
 
     public void addPlayer(Player player) {
+        if ( players.contains(player) ) {
+            return;
+        }
+
         players.add(player);
 
         if ( game != null ) {

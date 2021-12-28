@@ -12,7 +12,8 @@ export default function Register({ partyid }) {
 
     const socketHandler = usePacketHandler();
 
-    const [name, setName] = React.useState("");
+    const defaultName = localStorage.getItem("name");
+    const [name, setName] = React.useState(defaultName || "");
     const [submit, setSubmit] = React.useState(false);
 
     const [authenticating, setAuthenticating] = React.useState(false);

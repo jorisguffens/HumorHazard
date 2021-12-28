@@ -28,7 +28,7 @@ public class Server {
     private final Scheduler scheduler = new Scheduler();
 
     private final String letter;
-    private final List<Card> cards;
+    private final Map<String, Card> cards = new HashMap<>();
 
     private final Map<Player, ChannelHandler> players = new ConcurrentHashMap<>();
     private final Map<String, Party> parties = new ConcurrentHashMap<>();
@@ -36,7 +36,9 @@ public class Server {
     public Server(String letter, String url, String host, int port) {
         this.letter = letter;
 
-        this.cards = CardLoader.load();
+        for ( Card card : CardLoader.load() ) {
+            cards.put(card.id(), card);
+        }
 
         PacketHandler packetHandler = new PacketHandler();
         packetHandler.register(PacketType.REGISTER, new RegisterPacketListener(this));
@@ -48,13 +50,18 @@ public class Server {
         packetHandler.register(PacketType.PARTY_KICK, new PartyKickPacketListener(this));
         packetHandler.register(PacketType.PARTY_START_GAME, new PartyStartGamePacketListener(this));
         packetHandler.register(PacketType.PARTY_INFO, new PartyInfoPacketListener(this));
+        packetHandler.register(PacketType.GAME_PICK_CARDS, new GamePickCardsPacketListener(this));
 
         NettyServer nettyServer = new NettyServer(scheduler, packetHandler, url, host, port);
         nettyServer.start();
     }
 
-    public List<Card> cards() {
-        return cards;
+    public Collection<Card> cards() {
+        return Collections.unmodifiableCollection(cards.values());
+    }
+
+    public Card cardById(String id) {
+        return cards.get(id);
     }
 
     public Scheduler scheduler() {
@@ -134,7 +141,7 @@ public class Server {
             throw new IllegalArgumentException("A party with that id already exists!");
         }
 
-        Party party = new Party(id);
+        Party party = new Party(id, cards());
         parties.put(id, party);
         return party;
     }

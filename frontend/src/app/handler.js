@@ -28,8 +28,6 @@ export default function Handler() {
         setLoggingIn(true);
         socketHandler.sendc("LOGIN", {token}).then((player) => {
             dispatchLogin(player);
-        }).catch(err => {
-            console.error(err);
         }).finally(() => {
             setLoggingIn(false);
         })

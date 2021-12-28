@@ -1,7 +1,9 @@
 
 .card {
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  max-width: 150px;
 
   & img {
     max-height: 100%;
@@ -23,7 +25,7 @@
     }
   }
 
-  &:hover .overlay {
+  &:hover:not(.disabled) .overlay {
     display: flex;
     align-items: center;
     justify-content: center;
