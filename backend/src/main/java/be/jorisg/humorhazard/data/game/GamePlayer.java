@@ -63,4 +63,8 @@ public class GamePlayer {
         afkCount++;
     }
 
+    public void resetAfkCount() {
+        this.afkCount = 0;
+    }
+
 }

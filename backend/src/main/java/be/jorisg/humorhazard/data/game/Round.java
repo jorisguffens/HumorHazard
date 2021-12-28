@@ -3,6 +3,7 @@ package be.jorisg.humorhazard.data.game;
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.card.CardType;
+import be.jorisg.humorhazard.scheduler.SchedulerTask;
 
 import java.util.*;
 
@@ -12,6 +13,7 @@ import java.util.*;
 public class Round {
 
     private final int reward;
+    private final boolean bonusRound;
 
     private final Player judge;
     private Card[] startCards;
@@ -20,10 +22,29 @@ public class Round {
     private final Map<Player, Card[]> picks = new HashMap<>();
     private Player winner = null;
 
-    public Round(Player judge, Card startCard) {
+    private SchedulerTask timer;
+
+    private Round(Player judge, Card startCard, boolean bonusRound) {
         this.judge = judge;
         this.startCards = new Card[] { startCard };
-        this.reward = startCard.type() == CardType.RED ? 2 : 1;
+        this.bonusRound = bonusRound;
+        this.reward = bonusRound ? 2 : 1;
+
+        if ( bonusRound ) {
+            status = RoundStatus.PICKING;
+        }
+    }
+
+    public Round(Player judge, Card startCard) {
+        this(judge, startCard, startCard.type() == CardType.RED);
+    }
+
+    void removePlayer(Player player) {
+        picks.remove(player);
+    }
+
+    public boolean isBonusRound() {
+        return bonusRound;
     }
 
     public int reward() {
@@ -60,7 +81,6 @@ public class Round {
         } else {
             startCards = new Card[] { startCards[0], card };
         }
-        status = RoundStatus.PICKING;
     }
 
     public void setPlayerCards(Player player, Card[] cards) {
@@ -78,14 +98,31 @@ public class Round {
 
     public void setWinner(Player winner) {
         this.winner = winner;
-        status = RoundStatus.FINISHED;
+    }
+
+    public SchedulerTask timer() {
+        return timer;
+    }
+
+    public void setTimer(SchedulerTask timer) {
+        this.timer = timer;
     }
 
     public enum RoundStatus {
-        FILLING,
-        PICKING,
-        CHOOSING_WINNER,
-        FINISHED
+        FILLING(40),
+        PICKING(60),
+        CHOOSING_WINNER(60),
+        FINISHED(8);
+
+        private final int defaultDuration;
+
+        RoundStatus(int defaultDuration) {
+            this.defaultDuration = defaultDuration;
+        }
+
+        public int defaultDuration() {
+            return defaultDuration;
+        }
     }
 
 }

@@ -34,6 +34,8 @@ public class RoundSerializer extends StdSerializer<Round> {
             gen.writeObjectField("winner_cards", value.picks().get(value.winner()));
         }
 
+        gen.writeObjectField("bonus_round", value.isBonusRound());
+
         gen.writeEndObject();
     }
 }

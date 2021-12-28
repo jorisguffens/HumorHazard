@@ -36,7 +36,7 @@ public class LoginPacketListener extends AbstractPacketListener {
             return;
         }
 
-        player = server.players().stream().filter(p -> p.token().equals(token)).findFirst().orElse(null);
+        player = server.reconnectingPlayers().stream().filter(p -> p.token().equals(token)).findFirst().orElse(null);
         if ( player == null ) {
             respond.accept(type, new Error("Login failed."));
             return;

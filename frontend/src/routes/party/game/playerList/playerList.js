@@ -44,7 +44,7 @@ export default function PlayerList() {
         elements.push(
             <div className={clsx(style.item, p.id === player.id && style.self)} key={i}>
                 <div className={style.itemPlayer}>
-                    <div>
+                    <div key={icon}>
                         <i className={icon}/>&nbsp;&nbsp; {p.name}
                     </div>
                     <div>

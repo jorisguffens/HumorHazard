@@ -1,6 +1,7 @@
 package be.jorisg.humorhazard.data.game;
 
 import be.jorisg.humorhazard.data.Player;
+import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.card.CardType;
 import be.jorisg.humorhazard.data.card.Deck;
 
@@ -46,6 +47,13 @@ public class Game {
         pastJudges.remove(player);
         participants.remove(player);
         spectators.remove(player);
+
+        if ( round != null ) {
+            round.removePlayer(player);
+            if ( round.judge() == player ) {
+                nextRound();
+            }
+        }
     }
 
     public void addSpectator(Player player) {
@@ -94,8 +102,8 @@ public class Game {
         pastJudges.add(judge);
 
         // create round
-        roundNumber++;
         this.round = new Round(judge, deck.take());
+        roundNumber++;
     }
 
 }

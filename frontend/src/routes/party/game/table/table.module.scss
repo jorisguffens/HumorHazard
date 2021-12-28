@@ -1,13 +1,20 @@
 
 .table {
+  display: flex;
   margin: 15px 0 25px 0;
 }
 
-.startCards {
-  display: inline-block;
-  margin-right: 15px;
+.bonusTable {
+  flex-direction: row-reverse;
+}
 
-  padding: 10px;
+.startCards {
+  flex-shrink: 0;
+}
+
+.startCards .paper {
+  margin: 0 15px;
+  padding: 10px 2.5px;
 
   & > div {
     display: flex;
@@ -19,9 +26,14 @@
   }
 }
 
-.card {
-  display: inline-block;
+.pickedCards {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
 
+.card {
   transform: scale(.9);
 
   &:first-child {
@@ -30,5 +42,15 @@
 
   &:last-child {
     padding-right: 0;
+  }
+}
+
+.cardGroup {
+  display: flex;
+  padding: 0 15px;
+  margin: 0 5px;
+
+  & .card:first-child {
+    margin-right: -10px;
   }
 }

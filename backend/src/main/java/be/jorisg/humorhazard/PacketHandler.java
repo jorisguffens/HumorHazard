@@ -14,13 +14,17 @@ import java.util.function.Consumer;
 public class PacketHandler {
 
     private final Set<RegisteredListener> listeners = new HashSet<>();
+    private final Set<Consumer<ChannelHandler>> disconnectListeners = new HashSet<>();
 
-    public void register(PacketType type, PacketListener listener) {
+    public void registerPacketListener(PacketType type, PacketListener listener) {
         listeners.add(new RegisteredListener(type, listener));
     }
 
-    private record RegisteredListener(PacketType type, PacketListener listener) {
+    public void registerDisconnectListener(Consumer<ChannelHandler> listener) {
+        disconnectListeners.add(listener);
     }
+
+    private record RegisteredListener(PacketType type, PacketListener listener) {}
 
     //
 
@@ -62,7 +66,13 @@ public class PacketHandler {
     }
 
     public void handleDisconnect(ChannelHandler ch) {
-
+        for ( Consumer<ChannelHandler> c : disconnectListeners ) {
+            try {
+                c.accept(ch);
+            } catch (Exception ex) {
+                ex.printStackTrace();;
+            }
+        }
     }
 
 }

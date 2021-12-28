@@ -25,8 +25,8 @@ export default function Card({card, disabled, onClick, selectText}) {
         <div className={clsx(style.card, disabled && style.disabled)}>
             <img src={"/img/cards/" + card.image} alt=""/>
             {onClick && (
-                <div className={style.overlay} onClick={onClick}>
-                    <Button>{selectText}</Button>
+                <div className={style.overlay}>
+                    <Button onClick={onClick}>{selectText}</Button>
                 </div>
             )}
         </div>

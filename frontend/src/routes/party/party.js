@@ -55,10 +55,14 @@ export default function Party() {
 
     useEffect(() => {
         const unregister = packetHandler.registerTypeListener("PARTY_UPDATE", (party) => {
+            if ( !party ) {
+                navigate("/");
+                return;
+            }
             dispatchParty(party);
         });
         return () => unregister();
-    })
+    }, [packetHandler, navigate, dispatchParty]);
 
     if (!player) {
         return <Register/>

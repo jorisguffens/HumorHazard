@@ -1,5 +1,5 @@
 import {useCallback, useEffect} from "react";
-import {Grid, MenuItem, Select, Slider, Switch} from "@mui/material";
+import {Grid, MenuItem, Select, Slider, Stack, Switch} from "@mui/material";
 
 import {useDispatchPartySettings, usePartyPlayers, usePartySettings, usePlayer} from "../../../../redux/hooks";
 
@@ -9,11 +9,12 @@ import style from "./partySettings.module.scss";
 
 export default function PartySettings() {
 
+    const partyPlayers = usePartyPlayers();
     const settings = usePartySettings();
     const dispatchSettings = useDispatchPartySettings();
     const packetHandler = usePacketHandler();
 
-    const disabled = usePartyPlayers()[0].id !== usePlayer().id;
+    const disabled = partyPlayers[0].id !== usePlayer().id;
 
     const update = useCallback((key, value) => {
         settings[key] = value;
@@ -22,7 +23,7 @@ export default function PartySettings() {
 
     // update local values with changes received from the server
     useEffect(() => {
-        if ( !disabled ) return;
+        if (!disabled) return;
         const unregister = packetHandler.registerTypeListener("PARTY_UPDATE_SETTINGS", (settings) => {
             dispatchSettings(settings);
         });
@@ -31,7 +32,7 @@ export default function PartySettings() {
 
     // only send updated settings to server when they were unchanged for 1 second
     useEffect(() => {
-        if ( disabled ) return;
+        if (disabled) return;
         const id = setTimeout(() => {
             packetHandler.sendc("PARTY_CHANGE_SETTINGS", settings);
         }, 1000);
@@ -42,7 +43,7 @@ export default function PartySettings() {
         <>
             <Grid container className={style.settingGroup}>
                 <Grid item xs={6} className={style.settingLabel}>
-                    Public visible
+                    Public party
                 </Grid>
                 <Grid item xs={6}>
                     <Switch checked={settings.visible} disabled={disabled}
@@ -54,10 +55,13 @@ export default function PartySettings() {
                 <Grid item xs={6} className={style.settingLabel}>
                     Player limit
                 </Grid>
-                <Grid item xs={6}>
-                    <Slider size="medium" value={settings.player_limit} disabled={disabled}
-                            valueLabelDisplay="auto" min={3} max={10} step={1}
-                            onChange={(e) => update("player_limit", e.target.value)}/>
+                <Grid item xs={6} style={{display: "flex", alignItems: "center"}}>
+                    <Stack spacing={2} direction="row" sx={{width: "calc(100% - 10px)"}} alignItems="center">
+                        <div style={{width: "20px"}}>{settings.player_limit}</div>
+                        <Slider size="medium" value={settings.player_limit} disabled={disabled}
+                                valueLabelDisplay="auto" min={Math.max(3, partyPlayers.length)} max={10} step={1}
+                                onChange={(e) => update("player_limit", e.target.value)}/>
+                    </Stack>
                 </Grid>
             </Grid>
 
@@ -66,9 +70,12 @@ export default function PartySettings() {
                     Score limit
                 </Grid>
                 <Grid item xs={6}>
-                    <Slider size="medium" value={settings.score_limit} disabled={disabled}
-                            valueLabelDisplay="auto" min={3} max={12} step={1}
-                            onChange={(e) => update("score_limit", e.target.value)}/>
+                    <Stack spacing={2} direction="row" sx={{width: "calc(100% - 10px)"}} alignItems="center">
+                        <div style={{width: "20px"}}>{settings.score_limit}</div>
+                        <Slider size="medium" value={settings.score_limit} disabled={disabled}
+                                valueLabelDisplay="auto" min={3} max={12} step={1}
+                                onChange={(e) => update("score_limit", e.target.value)}/>
+                    </Stack>
                 </Grid>
             </Grid>
 
@@ -78,8 +85,10 @@ export default function PartySettings() {
                 </Grid>
                 <Grid item xs={6}>
                     <Select
-                        value={settings.timer_duration_multiplier} componentsProps={{Input: {InputLabelProps: {shrink: false}}}}
-                        label="" disabled={disabled} onChange={(e) => update("timer_duration_multiplier", e.target.value)}
+                        value={settings.timer_duration_multiplier}
+                        componentsProps={{Input: {InputLabelProps: {shrink: false}}}}
+                        label="" disabled={disabled}
+                        onChange={(e) => update("timer_duration_multiplier", e.target.value)}
                     >
                         <MenuItem value={0}>Disabled</MenuItem>
                         <MenuItem value={1}>1x</MenuItem>

@@ -5,7 +5,7 @@ package be.jorisg.humorhazard.data.party;
  */
 public class PartySettings {
 
-    private boolean visible = true;
+    private boolean visible = false;
 
     private int scoreLimit = 5;
     private int playerLimit = 10;

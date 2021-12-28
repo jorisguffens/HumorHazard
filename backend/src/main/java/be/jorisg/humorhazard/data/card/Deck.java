@@ -35,6 +35,10 @@ public class Deck {
         cards.add(card);
     }
 
+    public void addAll(Collection<Card> cards) {
+        cards.forEach(this::add);
+    }
+
     public void shuffle() {
         Collections.shuffle(this.cards);
     }

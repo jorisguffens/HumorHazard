@@ -95,6 +95,11 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
                 return;
             }
 
+            if ( round.isBonusRound() && cards.size() != 2 ) {
+                respond.accept(type, new Error("You must pick 2 cards."));
+                return;
+            }
+
             respond.accept(type, null);
             pickPlayer(player, party, cards);
             return;
@@ -116,10 +121,10 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
     private void pickFill(Player player, Party party, Card card, boolean before) {
         Round round = party.game().round();
         round.setJudgeCard(card, before);
-        server.send(party.players(), PacketType.GAME_ROUND_UPDATE, round);
-
         party.game().participants().get(round.judge()).takeCard(card);
+        party.deck().add(card);
         server.send(player, PacketType.GAME_HAND_UPDATE, party.game().participants().get(player).hand());
+        server.advanceRound(party);
     }
 
     private void pickWinner(Party party, Card card) {
@@ -129,39 +134,24 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
         round.setWinner(winner);
-
         party.game().participants().get(winner).increaseScore(round.reward());
-        server.send(party.players(), PacketType.GAME_UPDATE, party.game());
 
-        server.scheduler().later(() -> {
-            if ( party.game().participants().containsKey(winner ) ) {
-                int score = party.game().participants().get(winner).score();
-                if ( score >= party.settings().scoreLimit() ) {
-                    party.finish();
-                    server.send(party.players(), PacketType.PARTY_UPDATE, party);
-                    return;
-                }
-            }
-
-            party.game().nextRound();
-            server.send(party.players(), PacketType.GAME_UPDATE, party.game());
-
-            party.game().participants().forEach((key, value) ->
-                    server.send(key, PacketType.GAME_HAND_UPDATE, value.hand()));
-        }, 8, TimeUnit.SECONDS);
+        server.advanceRound(party);
     }
 
     private void pickPlayer(Player player, Party party, Collection<Card> cards) {
         Round round = party.game().round();
         round.setPlayerCards(player, cards.toArray(new Card[0]));
-        party.game().participants().get(player).takeCards(cards);
 
-        if (round.pickedPlayers().size() >= party.game().participants().size() - 1) {
-            round.changeStatus(Round.RoundStatus.CHOOSING_WINNER);
-        }
+        party.game().participants().get(player).takeCards(cards);
+        party.deck().addAll(cards);
 
         server.send(player, PacketType.GAME_HAND_UPDATE, party.game().participants().get(player).hand());
         server.send(party.players(), PacketType.GAME_ROUND_UPDATE, round);
+
+        if (round.pickedPlayers().size() >= party.game().participants().size() - 1) {
+            server.advanceRound(party);
+        }
     }
 
 }

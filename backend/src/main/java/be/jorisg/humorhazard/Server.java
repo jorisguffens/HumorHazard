@@ -2,6 +2,8 @@ package be.jorisg.humorhazard;
 
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
+import be.jorisg.humorhazard.data.game.Game;
+import be.jorisg.humorhazard.data.game.Round;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.listeners.*;
 import be.jorisg.humorhazard.netty.ChannelHandler;
@@ -16,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by Joris on 3/04/2020 in project HumorHazard.
@@ -24,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class Server {
 
     private static final Logger logger = LogManager.getLogger(HumorHazard.class);
+    private static final Random random = new Random();
 
     private final Scheduler scheduler = new Scheduler();
 
@@ -31,26 +36,30 @@ public class Server {
     private final Map<String, Card> cards = new HashMap<>();
 
     private final Map<Player, ChannelHandler> players = new ConcurrentHashMap<>();
+    private final Set<Player> reconnectingPlayers = new CopyOnWriteArraySet<>();
+
     private final Map<String, Party> parties = new ConcurrentHashMap<>();
 
     public Server(String letter, String url, String host, int port) {
         this.letter = letter;
 
-        for ( Card card : CardLoader.load() ) {
+        for (Card card : CardLoader.load()) {
             cards.put(card.id(), card);
         }
 
         PacketHandler packetHandler = new PacketHandler();
-        packetHandler.register(PacketType.REGISTER, new RegisterPacketListener(this));
-        packetHandler.register(PacketType.LOGIN, new LoginPacketListener(this));
-        packetHandler.register(PacketType.PARTY_CREATE, new PartyCreatePacketListener(this));
-        packetHandler.register(PacketType.PARTY_JOIN, new PartyJoinPacketListener(this));
-        packetHandler.register(PacketType.PARTY_QUIT, new PartyQuitPacketListener(this));
-        packetHandler.register(PacketType.PARTY_CHANGE_SETTINGS, new PartyChangeSettingsPacketListener(this));
-        packetHandler.register(PacketType.PARTY_KICK, new PartyKickPacketListener(this));
-        packetHandler.register(PacketType.PARTY_START_GAME, new PartyStartGamePacketListener(this));
-        packetHandler.register(PacketType.PARTY_INFO, new PartyInfoPacketListener(this));
-        packetHandler.register(PacketType.GAME_PICK_CARDS, new GamePickCardsPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.REGISTER, new RegisterPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.LOGIN, new LoginPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_CREATE, new PartyCreatePacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_JOIN, new PartyJoinPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_QUIT, new PartyQuitPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_CHANGE_SETTINGS, new PartyChangeSettingsPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_KICK, new PartyKickPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_START_GAME, new PartyStartGamePacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_INFO, new PartyInfoPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.GAME_PICK_CARDS, new GamePickCardsPacketListener(this));
+
+        packetHandler.registerDisconnectListener(this::disconnect);
 
         NettyServer nettyServer = new NettyServer(scheduler, packetHandler, url, host, port);
         nettyServer.start();
@@ -68,30 +77,44 @@ public class Server {
         return scheduler;
     }
 
+    public Set<Player> reconnectingPlayers() {
+        return Collections.unmodifiableSet(reconnectingPlayers);
+    }
+
     public Player register(String name) {
         return new Player(UUID.randomUUID().toString(), name, RandomStringUtils.randomAlphanumeric(32));
     }
 
     public void connect(Player player, ChannelHandler ch) {
-        Player old = playerByConnection(ch);
-        if ( old != null ) {
-            quit(old);
+        players.put(player, ch);
+        reconnectingPlayers.remove(player);
+
+        Party party = partyByPlayer(player);
+        if ( party == null || party.game() == null || !party.game().participants().containsKey(player)) {
+            return;
         }
 
-        players.put(player, ch);
+        party.game().participants().get(player).setDisconnected(false);
+        send(party.players(), PacketType.PARTY_UPDATE, party);
     }
 
-    public void disconnect(Player player) {
-        players.put(player, null);
+    public void disconnect(ChannelHandler ch) {
+        Player player = playerByConnection(ch);
+        if ( player == null ) {
+            return;
+        }
+
+        players.remove(player);
+        reconnectingPlayers.add(player);
 
         Party party = partyByPlayer(player);
         if (party == null) {
-            quitTimer(player, 30);
+            quitTimer(player, 5); // just logged in
             return;
         }
 
         if (party.game() == null) {
-            quitTimer(player, 30); // party not in game
+            quitTimer(player, 5); // party not in game
             return;
         }
 
@@ -100,28 +123,31 @@ public class Server {
             return;
         }
 
-        // TODO update disconnected status
-//        pi.disconnected = true;
-//        if (party.game.round != null) {
-//            party.game.round.publish();
-//        }
+        party.game().participants().get(player).setDisconnected(true);
+        send(party.players(), PacketType.PARTY_UPDATE, party);
 
         quitTimer(player, 30); // party ingame
     }
 
-    public void quit(Player player) {
+    public void quitParty(Player player) {
         Party party = partyByPlayer(player);
         if (party != null) {
             party.removePlayer(player);
             send(party.players(), PacketType.PARTY_UPDATE, party);
         }
 
+        send(player, PacketType.PARTY_UPDATE, null);
+    }
+
+    public void quit(Player player) {
+        quitParty(player);
         players.remove(player);
+        reconnectingPlayers.remove(player);
     }
 
     private void quitTimer(Player player, int seconds) {
         scheduler.later(() -> {
-            if (players.get(player) != null) {
+            if (players.containsKey(player)) {
                 return;
             }
             quit(player);
@@ -137,7 +163,7 @@ public class Server {
     }
 
     public Party createParty(String id) {
-        if ( partyById(id) != null ) {
+        if (partyById(id) != null) {
             throw new IllegalArgumentException("A party with that id already exists!");
         }
 
@@ -185,13 +211,15 @@ public class Server {
         players.forEach(p -> send(p, type, payload));
     }
 
-    public void send(Player p, PacketType type, Object payload) {
-        ChannelHandler ch = players.get(p);
-        send(ch, type, payload);
-    }
-
     public void send(Player p, PacketType type) {
         send(p, type, null);
+    }
+
+    public void send(Player p, PacketType type, Object payload) {
+        ChannelHandler ch = players.get(p);
+        if ( ch != null ) {
+            send(ch, type, payload);
+        }
     }
 
     public void send(ChannelHandler ch, PacketType type, Object payload) {
@@ -205,6 +233,119 @@ public class Server {
 
     public void send(ChannelHandler ch, PacketType type) {
         send(ch, type, null);
+    }
+
+    // --- TIMERS ---
+
+    public void startRoundTimer(Party party) {
+        if (party.game() == null)
+            throw new IllegalArgumentException("There is no game in progress for the given party.");
+
+        Round round = party.game().round();
+        if (round == null)
+            throw new IllegalArgumentException("No round has started for the given game");
+
+        if (round.timer() != null) {
+            round.timer().cancel();
+        }
+
+        int duration;
+        if ( round.status() == Round.RoundStatus.FINISHED ) {
+            duration = round.status().defaultDuration();
+        }
+        else if (party.settings().timerDurationMultiplier() == 0) {
+            return; // no timer
+        }
+        else {
+            duration = round.status().defaultDuration() * party.settings().timerDurationMultiplier();
+        }
+
+        round.setTimer(scheduler.repeat(new Runnable() {
+            private int count = duration;
+
+            @Override
+            public void run() {
+                if (count < 0) {
+                    advanceRound(party);
+                    return;
+                }
+
+                send(players(), PacketType.ROUND_COUNTDOWN_UPDATE, count);
+                count--;
+            }
+        }, 1, TimeUnit.SECONDS));
+    }
+
+    public void advanceRound(Party party) {
+        if (party.game() == null)
+            throw new IllegalArgumentException("There is no game in progress for the given party.");
+
+        Game game = party.game();
+
+        Round round = party.game().round();
+        if (round == null)
+            throw new IllegalArgumentException("No round has started for the given game");
+
+        if (round.timer() != null) {
+            round.timer().cancel();
+        }
+
+        if (round.status() == Round.RoundStatus.FILLING) {
+            if (!round.isBonusRound() && round.startCards().length == 1) {
+                game.participants().get(round.judge()).increaseAfkCount();
+                game.nextRound();
+            } else {
+                round.changeStatus(Round.RoundStatus.PICKING);
+            }
+        } else if (round.status() == Round.RoundStatus.PICKING) {
+            game.participants().entrySet().stream().filter(e -> !round.picks().containsKey(e.getKey()))
+                    .forEach(e -> e.getValue().increaseAfkCount());
+
+            if (round.picks().isEmpty()) {
+                game.nextRound();
+            }
+            else if ( round.picks().size() == 1 ) {
+                round.setWinner(round.picks().keySet().stream().findFirst().orElse(null));
+                round.changeStatus(Round.RoundStatus.FINISHED);
+            } else {
+                round.changeStatus(Round.RoundStatus.CHOOSING_WINNER);
+            }
+        } else if (round.status() == Round.RoundStatus.CHOOSING_WINNER) {
+            if (round.winner() == null) {
+                game.participants().get(round.judge()).increaseAfkCount();
+                game.nextRound();
+            } else {
+                round.changeStatus(Round.RoundStatus.FINISHED);
+            }
+        } else if (round.status() == Round.RoundStatus.FINISHED) {
+            if (game.participants().values().stream().anyMatch(gp -> gp.score() >= party.settings().scoreLimit())) {
+                party.finish();
+                send(party.players(), PacketType.PARTY_UPDATE, party);
+                return;
+            }
+
+            game.nextRound();
+        }
+
+        // remove afk players
+        Set<Player> afkPlayers = game.participants().entrySet().stream()
+                .filter(e -> e.getValue().afkCount() >= 2)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+        afkPlayers.forEach(this::quitParty);
+
+        // stop game if there are not enough players
+        if (party.players().size() < 3) {
+            party.finish();
+            send(party.players(), PacketType.PARTY_UPDATE, party);
+            return;
+        }
+
+        send(party.players(), PacketType.GAME_UPDATE, party.game());
+        party.game().participants().forEach((key, value) ->
+                send(key, PacketType.GAME_HAND_UPDATE, value.hand()));
+
+        startRoundTimer(party);
     }
 
 }

@@ -33,12 +33,12 @@ export default function Game() {
             <br/>
             <Paper className={style.paper}>
                 <Grid container>
-                    <Grid item xs={6} className={style.title}>
+                    <Grid item xs={12} md={8} className={style.title}>
                         <Typography variant={"h4"} component={"h1"}>
                             Humor Hazard
                         </Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={4}>
                         <PartyLink/>
                     </Grid>
                 </Grid>

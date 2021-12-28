@@ -38,6 +38,7 @@ public class PartyStartGamePacketListener extends AbstractPacketListener {
         }
 
         party.start();
+        server.startRoundTimer(party);
 
         server.send(party.players(), PacketType.PARTY_UPDATE, party);
         party.game().participants().forEach((p, gp) -> server.send(p, PacketType.GAME_HAND_UPDATE, gp.hand()));
