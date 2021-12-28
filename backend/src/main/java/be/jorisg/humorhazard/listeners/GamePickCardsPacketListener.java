@@ -13,10 +13,7 @@ import be.jorisg.humorhazard.packets.AbstractPacketListener;
 import be.jorisg.humorhazard.packets.PacketType;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
@@ -119,32 +116,33 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
     private void pickFill(Player player, Party party, Card card, boolean before) {
         Round round = party.game().round();
         round.setJudgeCard(card, before);
-        party.game().participants().get(round.judge()).takeCard(card);
-        round.changeStatus(Round.RoundStatus.PICKING);
-
-        server.send(player, PacketType.GAME_HAND_UPDATE, party.game().participants().get(player).hand());
         server.send(party.players(), PacketType.GAME_ROUND_UPDATE, round);
+
+        party.game().participants().get(round.judge()).takeCard(card);
+        server.send(player, PacketType.GAME_HAND_UPDATE, party.game().participants().get(player).hand());
     }
 
     private void pickWinner(Party party, Card card) {
         Round round = party.game().round();
-        outer:
-        for (Player player : round.picks().keySet()) {
-            for (Card c : round.picks().get(player)) {
-                if (c == card) {
-                    round.setWinner(player);
-                    break outer;
-                }
-            }
-        }
+        Player winner = round.picks().entrySet().stream()
+                .filter(e -> Arrays.asList(e.getValue()).contains(card))
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
+        round.setWinner(winner);
 
-        party.game().participants().get(round.winner()).increaseScore(round.reward());
-        // TODO if score limit is reached
-
-        round.changeStatus(Round.RoundStatus.FINISHED);
+        party.game().participants().get(winner).increaseScore(round.reward());
         server.send(party.players(), PacketType.GAME_UPDATE, party.game());
 
         server.scheduler().later(() -> {
+            if ( party.game().participants().containsKey(winner ) ) {
+                int score = party.game().participants().get(winner).score();
+                if ( score >= party.settings().scoreLimit() ) {
+                    party.finish();
+                    server.send(party.players(), PacketType.PARTY_UPDATE, party);
+                    return;
+                }
+            }
+
             party.game().nextRound();
             server.send(party.players(), PacketType.GAME_UPDATE, party.game());
 

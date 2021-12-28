@@ -60,6 +60,7 @@ public class Round {
         } else {
             startCards = new Card[] { startCards[0], card };
         }
+        status = RoundStatus.PICKING;
     }
 
     public void setPlayerCards(Player player, Card[] cards) {
@@ -77,6 +78,7 @@ public class Round {
 
     public void setWinner(Player winner) {
         this.winner = winner;
+        status = RoundStatus.FINISHED;
     }
 
     public enum RoundStatus {

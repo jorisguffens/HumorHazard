@@ -85,4 +85,12 @@ public class Party {
         this.game.nextRound();
     }
 
+    public void finish() {
+        if ( game == null ) {
+            throw new IllegalStateException("There is no game in progress.");
+        }
+
+        this.game = null;
+    }
+
 }

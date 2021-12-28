@@ -17,3 +17,16 @@
     padding-right: 0;
   }
 }
+
+.judgePickDialog {
+  display: flex;
+  justify-content: space-around;
+
+  & > div {
+    margin: 0 10px;
+  }
+
+  & > div:nth-child(2) {
+    transform: scale(.8);
+  }
+}
