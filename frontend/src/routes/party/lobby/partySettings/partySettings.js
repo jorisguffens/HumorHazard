@@ -18,7 +18,7 @@ export default function PartySettings() {
     const update = useCallback((key, value) => {
         settings[key] = value;
         dispatchSettings({...settings});
-    }, [settings]);
+    }, [settings, dispatchSettings]);
 
     // update local values with changes received from the server
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function PartySettings() {
             dispatchSettings(settings);
         });
         return () => unregister();
-    }, [disabled, packetHandler]);
+    }, [disabled, packetHandler, dispatchSettings]);
 
     // only send updated settings to server when they were unchanged for 1 second
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function PartySettings() {
             packetHandler.sendc("PARTY_CHANGE_SETTINGS", settings);
         }, 1000);
         return () => clearTimeout(id);
-    }, [disabled, settings]);
+    }, [disabled, settings, packetHandler]);
 
     return (
         <>

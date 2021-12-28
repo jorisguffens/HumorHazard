@@ -1,12 +1,6 @@
 import clsx from "clsx";
 
-import {
-    useGameParticipants,
-    useGameRound,
-    useGameSpectators, useGameState,
-    usePartyPlayers,
-    usePlayer, useRoundStatus
-} from "../../../../redux/hooks";
+import {useGameParticipants, useGameRound, usePartyPlayers, usePlayer, useRoundStatus} from "../../../../redux/hooks";
 
 import style from "./playerList.module.scss";
 
@@ -31,16 +25,19 @@ export default function PlayerList() {
         }
 
         let status = "";
-        if ( !gp ) {
-            status = "Spectating..."
-        }
-        else if ( gp.disconnected ) {
+        if (!gp) {
+            status = "Spectating"
+        } else if (gp.disconnected) {
             status = "Disconnected"
-        } else if ( state === "PICKING" && round.picked_players.indexOf(p.id) === -1 && p.id !== round.judge.id ) {
+        } else if (state === "PICKING" && round.picked_players.indexOf(p.id) === -1 && p.id !== round.judge.id) {
+            if (round.start_cards.length === 2) {
+                status = "Picking a card...";
+            } else {
+                status = "Picking cards...";
+            }
+        } else if (state === "FILLING" && p.id === round.judge.id) {
             status = "Picking a card...";
-        } else if ( state === "FILLING" && p.id === round.judge.id ) {
-            status = "Picking a card...";
-        } else if ( state === "CHOOSING_WINNER" && p.id === round.judge.id ) {
+        } else if (state === "CHOOSING_WINNER" && p.id === round.judge.id) {
             status = "Choosing the winner...";
         }
 

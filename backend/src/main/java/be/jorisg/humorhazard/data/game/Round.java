@@ -17,7 +17,7 @@ public class Round {
     private Card[] startCards;
 
     private RoundStatus status = RoundStatus.FILLING;
-    private Map<Player, Card[]> picks = new HashMap<>();
+    private final Map<Player, Card[]> picks = new HashMap<>();
     private Player winner = null;
 
     public Round(Player judge, Card startCard) {
@@ -64,6 +64,7 @@ public class Round {
 
     public void setPlayerCards(Player player, Card[] cards) {
         picks.put(player, cards);
+
     }
 
     public void changeStatus(RoundStatus status) {

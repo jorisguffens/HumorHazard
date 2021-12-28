@@ -23,7 +23,7 @@ export default function Landing() {
             dispatchParty(party);
             navigate("/" + party.id);
         });
-    }, [packetHandler])
+    }, [packetHandler, navigate, dispatchParty])
 
     if (!player) {
         return (

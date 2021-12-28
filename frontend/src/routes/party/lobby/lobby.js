@@ -22,7 +22,7 @@ export default function Lobby() {
     const start = useCallback((e) => {
         e.preventDefault();
         packetHandler.send("PARTY_START_GAME");
-    }, []);
+    }, [packetHandler]);
 
     let footer = null;
     if ( partyPlayers.length < 3) {

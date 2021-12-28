@@ -31,7 +31,7 @@ export default function Handler() {
         }).finally(() => {
             setLoggingIn(false);
         })
-    }, [socketHandler]);
+    }, [socketHandler, dispatchLogin]);
 
     if (!socketHandler || loggingIn) {
         return <p>Loading...</p>

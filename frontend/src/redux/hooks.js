@@ -143,23 +143,3 @@ export function useGameSpectators() {
 export function useRoundStatus() {
     return useGameRound().status;
 }
-
-export function useShouldPickFromHand() {
-    const player = usePlayer();
-    const round = useGameRound();
-    const state = useRoundStatus();
-
-    if ( state === "FILLING" && player.id === round.judge.id ) {
-        return true;
-    }
-
-    if ( state === "PICKING" && player.id !== round.judge.id
-        && round.picked_players.indexOf(player.id) === -1 ) {
-        return true;
-    }
-
-    return false;
-}
-
-
-

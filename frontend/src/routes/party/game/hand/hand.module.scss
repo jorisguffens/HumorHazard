@@ -1,17 +1,13 @@
 
 .hand {
   position: relative;
-  display: block;
-  min-height: 100px;
-  height: 50%;
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
 }
 
 .card {
-  position: relative;
-  display: inline-block;
-  max-width: calc(100% / 7);
-  height: 100%;
-  padding: 15px 7.5px;
+  margin: 0 5px;
 
   &:first-child {
     padding-left: 0;

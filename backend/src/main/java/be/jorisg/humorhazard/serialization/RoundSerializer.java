@@ -29,6 +29,11 @@ public class RoundSerializer extends StdSerializer<Round> {
             gen.writeObjectField("picked_players", value.pickedPlayers().stream().map(Player::id).collect(Collectors.toSet()));
         }
 
+        if ( value.winner() != null ) {
+            gen.writeObjectField("winner", value.winner());
+            gen.writeObjectField("winner_cards", value.picks().get(value.winner()));
+        }
+
         gen.writeEndObject();
     }
 }

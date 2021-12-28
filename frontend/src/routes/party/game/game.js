@@ -9,6 +9,7 @@ import style from "./game.module.scss";
 import {useEffect} from "react";
 import {usePacketHandler} from "../../../socket/packetHandler";
 import {useDispatchGame, useDispatchGameRound} from "../../../redux/hooks";
+import Status from "./status/status";
 
 export default function Game() {
 
@@ -25,7 +26,7 @@ export default function Game() {
             }
         });
         return () => unregister();
-    }, [packetHandler]);
+    }, [packetHandler, dispatchGame, dispatchGameRound]);
 
     return (
         <Container maxWidth={"xl"}>
@@ -42,17 +43,16 @@ export default function Game() {
                     </Grid>
                 </Grid>
             </Paper>
-            <br/>
 
             <Table/>
             <Divider/>
             <Hand/>
 
             <Paper className={style.paper}>
-                <Typography variant={"h4"} component={"h2"}>
-                    COOL MESSAGE
-                </Typography>
+                <Status/>
             </Paper>
+            <br/>
+            <Divider/>
             <br/>
 
             <Grid container>
@@ -65,6 +65,7 @@ export default function Game() {
 
                 </Grid>
             </Grid>
+            <br/>
         </Container>
     )
 }

@@ -51,7 +51,7 @@ export default function Party() {
             // party doesn't exist
             navigate("/");
         })
-    }, [player, partyid]);
+    }, [player, party, partyid, packetHandler, dispatchParty, navigate]);
 
     useEffect(() => {
         const unregister = packetHandler.registerTypeListener("PARTY_UPDATE", (party) => {

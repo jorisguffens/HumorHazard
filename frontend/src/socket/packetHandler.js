@@ -40,7 +40,7 @@ function PacketHandler(uri, onopen) {
     this.sendc = function (type, payload) {
         const promise = new Promise(function (resolve, reject) {
             const func = (json) => {
-                if (json.error) {
+                if ( json && json.error) {
                     reject(json.error);
                     return;
                 }

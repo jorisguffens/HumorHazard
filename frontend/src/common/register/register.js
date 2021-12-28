@@ -15,7 +15,8 @@ export default function Register() {
     const dispatchLogin = useDispatchLogin();
     const packetHandler = usePacketHandler();
 
-    const [name, setName] = useState("");
+    const defaultName = localStorage.getItem("name");
+    const [name, setName] = useState(defaultName || "");
 
     const submit = useCallback((e) => {
         e.preventDefault();

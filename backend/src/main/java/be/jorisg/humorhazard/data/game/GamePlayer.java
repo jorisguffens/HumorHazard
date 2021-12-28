@@ -3,6 +3,7 @@ package be.jorisg.humorhazard.data.game;
 import be.jorisg.humorhazard.data.card.Card;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class GamePlayer {
 
     public void takeCard(Card card) {
         hand.remove(card);
+    }
+
+    public void takeCards(Collection<Card> cards) {
+        hand.removeAll(cards);
     }
 
     public int score() {
