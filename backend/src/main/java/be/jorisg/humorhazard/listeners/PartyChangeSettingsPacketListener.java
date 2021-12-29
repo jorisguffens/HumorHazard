@@ -42,9 +42,14 @@ public class PartyChangeSettingsPacketListener extends AbstractPacketListener {
         }
 
         if ( payload.has("player_limit") ) {
+            int current = party.settings().playerLimit();
             int limit = payload.get("player_limit").asInt();
             if ( limit >= 3 && limit <= 10 && limit >= party.players().size() ) {
                 party.settings().setPlayerLimit(payload.get("player_limit").asInt());
+            }
+
+            if ( current != limit && party.settings().isVisible() ) {
+                server.sendPartyList();
             }
         }
 
@@ -72,7 +77,7 @@ public class PartyChangeSettingsPacketListener extends AbstractPacketListener {
             }
         }
 
-        server.send(party.players(), PacketType.PARTY_UPDATE_SETTINGS, party.settings());
+        server.send(party.players(), PacketType.PARTY_SETTINGS_UPDATE, party.settings());
     }
 
 }

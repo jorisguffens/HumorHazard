@@ -24,7 +24,7 @@ export default function PartySettings() {
     // update local values with changes received from the server
     useEffect(() => {
         if (!disabled) return;
-        const unregister = packetHandler.registerTypeListener("PARTY_UPDATE_SETTINGS", (settings) => {
+        const unregister = packetHandler.registerTypeListener("PARTY_SETTINGS_UPDATE", (settings) => {
             dispatchSettings(settings);
         });
         return () => unregister();

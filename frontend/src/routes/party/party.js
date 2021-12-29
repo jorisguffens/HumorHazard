@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
-import {useDispatchParty, useGame, useParty, usePlayer} from "../../redux/hooks";
+import {useDispatchParty, useDispatchPartyPlayers, useGame, useParty, usePlayer} from "../../redux/hooks";
 import {usePacketHandler} from "../../socket/packetHandler";
 
 import Register from "../../common/register/register";
@@ -16,6 +16,7 @@ export default function Party() {
 
     const packetHandler = usePacketHandler();
     const dispatchParty = useDispatchParty();
+    const dispatchPartyPlayers = useDispatchPartyPlayers();
 
     const player = usePlayer();
     const party = useParty();
@@ -38,10 +39,6 @@ export default function Party() {
         }
 
         if (!player) {
-            // packetHandler.sendc("PARTY_INFO", {party: partyid}).catch(err => {
-            //     // party doesn't exist
-            //     navigate("/");
-            // });
             return;
         }
 
@@ -60,6 +57,13 @@ export default function Party() {
                 return;
             }
             dispatchParty(party);
+        });
+        return () => unregister();
+    }, [packetHandler, navigate, dispatchParty]);
+
+    useEffect(() => {
+        const unregister = packetHandler.registerTypeListener("PARTY_PLAYERS_UPDATE", (party) => {
+            dispatchPartyPlayers(party);
         });
         return () => unregister();
     }, [packetHandler, navigate, dispatchParty]);

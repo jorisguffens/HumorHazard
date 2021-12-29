@@ -41,6 +41,18 @@ export function useDispatchParty() {
     }, [dispatch]);
 }
 
+export function useDispatchPartyPlayers() {
+    const dispatch = useDispatch();
+    return useCallback((players) => {
+        dispatch({
+            type: "PARTY_PLAYERS",
+            action: (state) => {
+                return {...state, party: {...state.party, players}}
+            }
+        });
+    }, [dispatch]);
+}
+
 export function useDispatchPartySettings() {
     const dispatch = useDispatch();
     return useCallback((settings) => {

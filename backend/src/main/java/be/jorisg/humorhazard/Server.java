@@ -141,6 +141,8 @@ public class Server {
 
             if ( party.players().size() == 0 ) {
                 parties.remove(party.id());
+            } else if ( party.players().size() < 3 && party.game() != null ) {
+                party.finish();
             }
 
             if ( party.settings().isVisible() ) {
@@ -269,12 +271,15 @@ public class Server {
     // --- TIMERS ---
 
     public void startRoundTimer(Party party) {
-        if (party.game() == null)
-            throw new IllegalArgumentException("There is no game in progress for the given party.");
+        if (party.game() == null) {
+            logger.error("Cannot start timer, there is no game in progress for party " + party.id());
+            return;
+        }
 
         Round round = party.game().round();
-        if (round == null)
-            throw new IllegalArgumentException("No round has started for the given game");
+        if (round == null) {
+            return;
+        }
 
         party.cancelTimer();
 
@@ -300,7 +305,7 @@ public class Server {
                     return;
                 }
 
-                send(players(), PacketType.ROUND_COUNTDOWN_UPDATE, count);
+                send(party.players(), PacketType.ROUND_COUNTDOWN_UPDATE, count);
                 count--;
             }
         }, 1, TimeUnit.SECONDS));
