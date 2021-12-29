@@ -48,6 +48,9 @@ public class HumorHazard {
         objectMapper.registerModule(module);
 
         Server server = new Server(letter, url, host, port);
+
+        CommandManager cmdm = new CommandManager(server);
+        cmdm.start();
     }
 
 }

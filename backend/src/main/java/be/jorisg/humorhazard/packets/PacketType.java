@@ -17,7 +17,7 @@ public enum PacketType {
 
     // --- OUTBOUND ---
 
-    PARTYLIST,
+    PARTYLIST,ALERT,
 
     // party
     PARTY_UPDATE, PARTY_UPDATE_SETTINGS,

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class Server {
 
-    private static final Logger logger = LogManager.getLogger(HumorHazard.class);
+    private static final Logger logger = LogManager.getLogger(Server.class);
     private static final Random random = new Random();
 
     private final Scheduler scheduler = new Scheduler();
@@ -63,14 +63,6 @@ public class Server {
 
         NettyServer nettyServer = new NettyServer(scheduler, packetHandler, url, host, port);
         nettyServer.start();
-
-        scheduler.repeat(() -> {
-            logger.info("---- STATISTICS ----");
-            logger.info("Total players: " + players.size());
-            logger.info("Players in party: " + parties.values().stream().mapToLong(p -> p.players().size()).sum());
-            logger.info("Total parties: " + parties.size());
-            logger.info("Parties in game: " + parties.values().stream().filter(p -> p.game() != null).count());
-        }, 30, TimeUnit.SECONDS);
     }
 
     public Collection<Card> cards() {

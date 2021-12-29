@@ -7,6 +7,7 @@ import {useDispatchLogin} from "../redux/hooks";
 
 import Router from "./router";
 import Center from "../common/center/center";
+import Broadcast from "../common/broadcast/broadcast";
 
 export default function Handler() {
 
@@ -39,12 +40,14 @@ export default function Handler() {
 
     return (
         <>
+            <CssBaseline/>
+            <Broadcast/>
+
             <Alert severity={"info"}>
                 <strong>NEW UPDATE!</strong> The project has been severely updated. Please report bugs in my&nbsp;
                 <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
             </Alert>
 
-            <CssBaseline/>
             <Container maxWidth={"xs"}>
             </Container>
 
@@ -73,6 +76,7 @@ function Loader() {
                 </Alert>
             )}
             <CssBaseline/>
+
             <Center>
                 <Container maxWidth={"sm"} align={"center"}>
                     <Typography variant={"h4"} component={"h1"}>Connecting to server...</Typography>
