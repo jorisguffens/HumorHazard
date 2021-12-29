@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+
+  hum-frontend:
+    image: registry.jorisg.be/jorisguffens/humorhazard:frontend
+    container_name: hum-frontend
+    ports:
+      - 81:80
+
+  hum-backend:
+    image: registry.jorisg.be/jorisguffens/humorhazard:backend
+    container_name: hum-backend
+    environment:
+      - LETTER_PREFIX=A
+      - WEBSOCKET_URL=wss://alpha.humorhazard.com
+    ports:
+      - 82:80
+    volumes:
+      - ./logs:/opt/app/logs
