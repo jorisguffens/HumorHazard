@@ -1,23 +1,24 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 
 import {Alert, CircularProgress, Container, CssBaseline, Link, Typography} from "@mui/material";
 
 import {usePacketHandler} from "../socket/packetHandler";
-import {useDispatchLogin} from "../redux/hooks";
+import {useDispatchLogin, useDispatchLogout} from "../redux/hooks";
 
 import Router from "./router";
 import Center from "../common/center/center";
 import Broadcast from "../common/broadcast/broadcast";
+import ConnectionStatus from "../common/connectionStatus/connectionStatus";
 
 export default function Handler() {
 
     const dispatchLogin = useDispatchLogin();
+    const dispatchLogout = useDispatchLogout();
+
     const socketHandler = usePacketHandler();
     const [loggingIn, setLoggingIn] = useState(true);
 
-    useEffect(() => {
-        if (!socketHandler) return;
-
+    const login = useCallback(() => {
         const token = sessionStorage.getItem("login_token");
         if (!token) {
             setLoggingIn(false);
@@ -27,12 +28,20 @@ export default function Handler() {
         setLoggingIn(true);
         socketHandler.sendc("LOGIN", {token}).then((player) => {
             dispatchLogin(player);
-        }).finally(() => {
+        })
+        .catch(err => {
+            dispatchLogout();
+        })
+        .finally(() => {
             setLoggingIn(false);
         })
-    }, [socketHandler, dispatchLogin]);
+    }, [socketHandler, dispatchLogin, dispatchLogout])
 
-
+    useEffect(() => {
+        if (!socketHandler) return;
+        login();
+        socketHandler.registerOpenListener(() => login());
+    }, [socketHandler, login]);
 
     if (!socketHandler || loggingIn) {
         return <Loader/>
@@ -42,6 +51,7 @@ export default function Handler() {
         <>
             <CssBaseline/>
             <Broadcast/>
+            <ConnectionStatus/>
 
             <Alert severity={"info"}>
                 <strong>NEW UPDATE!</strong> The project has been severely updated. Please report bugs in my&nbsp;
@@ -72,7 +82,8 @@ function Loader() {
         <>
             {showMessage && (
                 <Alert severity={"error"}>
-                    Looks like you are having trouble connecting. Check my <Link href="https://discord.gg/dNWfCajm2F">discord</Link> for status updates.
+                    Looks like you are having trouble connecting. Check my <Link
+                    href="https://discord.gg/dNWfCajm2F">discord</Link> for status updates.
                 </Alert>
             )}
             <CssBaseline/>

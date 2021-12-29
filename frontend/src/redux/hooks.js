@@ -7,7 +7,7 @@ export function useDispatchLogout() {
         dispatch({
             type: "LOGOUT",
             action: () => {
-                return {}
+                return {};
             }
         });
     }, [dispatch]);
