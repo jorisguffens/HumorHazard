@@ -1,11 +1,10 @@
-@echo off
 
 pushd backend
-build-and-push-image.bat
+@echo | call build-and-push-image.bat
 
 popd
 pushd frontend
-build-and-push-image.bat
+@echo | call build-and-push-image.bat
 
 popd
 

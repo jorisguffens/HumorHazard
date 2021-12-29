@@ -10,13 +10,10 @@ function createPacket(type, payload) {
     return packet;
 }
 
-function PacketHandler(uri, onopen) {
+function PacketHandler(socket) {
 
     const callbacks = {};
     const listeners = [];
-
-    const socket = new Socket(uri);
-    socket.connect();
 
     socket.registerListener('receive', (json) => {
         if (json.callback != null && callbacks[json.callback] != null) {
@@ -29,10 +26,6 @@ function PacketHandler(uri, onopen) {
         }
     });
 
-    socket.registerListener('open', () => {
-        if (onopen) onopen(this);
-    })
-
     this.send = function (type, payload) {
         socket.send(createPacket(type, payload));
     };
@@ -40,7 +33,7 @@ function PacketHandler(uri, onopen) {
     this.sendc = function (type, payload) {
         const promise = new Promise(function (resolve, reject) {
             const func = (json) => {
-                if ( json && json.error) {
+                if (json && json.error) {
                     reject(json.error);
                     return;
                 }
@@ -89,18 +82,29 @@ function PacketHandler(uri, onopen) {
         }
     };
 
+    this.registerOpenListener = function(func) {
+        socket.registerListener("open", func);
+    }
+
+    this.registerCloseListener = function(func) {
+        socket.registerListener("close", func);
+    }
 }
 
 const PacketHandlerContext = createContext(null);
-
 export function PacketHandlerProvider({children}) {
 
     const [value, setValue] = useState(null);
 
     useEffect(() => {
-        new PacketHandler(process.env.REACT_APP_WS, (handler) => {
-            setValue(handler);
-        })
+        const socket = new Socket(process.env.REACT_APP_WS);
+        const packetHandler = new PacketHandler(socket);
+
+        socket.registerListener('open', () => {
+            setValue(packetHandler);
+        });
+
+        socket.connect();
     }, [])
 
     return (

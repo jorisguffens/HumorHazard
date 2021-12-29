@@ -24,7 +24,8 @@ public class PartyQuitPacketListener extends AbstractPacketListener {
             return;
         }
 
-        server.quit(player);
+        server.quitParty(player);
+        server.sendPartyList(player);
     }
 
 }

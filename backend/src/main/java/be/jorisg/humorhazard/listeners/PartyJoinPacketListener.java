@@ -47,6 +47,10 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
         party.addPlayer(player);
         server.send(party.players(), PacketType.PARTY_UPDATE, party);
 
+        if ( party.settings().isVisible() ) {
+            server.sendPartyList();
+        }
+
         respond.accept(type, party);
         update(player, party);
     }

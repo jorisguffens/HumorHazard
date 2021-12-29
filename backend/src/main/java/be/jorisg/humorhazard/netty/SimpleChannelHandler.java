@@ -1,7 +1,6 @@
 package be.jorisg.humorhazard.netty;
 
 import be.jorisg.humorhazard.HumorHazard;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,14 +40,18 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        this.onConnect(ctx);
-        lastHeartbeat = System.currentTimeMillis();
+        this.ctx = ctx;
+        this.lastHeartbeat = System.currentTimeMillis();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        this.onDisconnect();
+        nettyServer.packetHandler().handleDisconnect(this);
+
+        if ( remoteAddr != null ) {
+            logger.debug("Closed connection from " + remoteAddr);
+        }
     }
 
     @Override
@@ -81,14 +84,12 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
 
         // ping
         if ( frame instanceof PingWebSocketFrame ) {
-            logger.info("Received ping, sending pong.");
             ctx.channel().writeAndFlush(new PongWebSocketFrame(frame.content().retain()));
             return;
         }
 
         // pong
         if (frame instanceof PongWebSocketFrame) {
-            logger.info("Received pong.");
             return;
         }
 
@@ -137,6 +138,7 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
         if ( handshaker == null ) {
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
         } else {
+            logger.debug("Opening connection from " + remoteAddr);
             handshaker.handshake(ctx.channel(), req);
         }
 
@@ -145,16 +147,6 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
     // EVENT HANDLING
 
     private ChannelHandlerContext ctx;
-
-    private void onConnect(ChannelHandlerContext ctx) {
-        this.ctx = ctx;
-        logger.debug("Opened connection from " + ctx.channel().remoteAddress().toString());
-    }
-
-    private void onDisconnect() {
-        logger.debug("Closed connection from " + ctx.channel().remoteAddress().toString());
-        nettyServer.packetHandler().handleDisconnect(this);
-    }
 
     private void onMessage(String message) {
         if ( message == null || message.equals("undefined") ) return;

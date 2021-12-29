@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 
-import {Alert, Container, CssBaseline, Link} from "@mui/material";
+import {Alert, CircularProgress, Container, CssBaseline, Link, Typography} from "@mui/material";
 
 import {usePacketHandler} from "../socket/packetHandler";
 import {useDispatchLogin} from "../redux/hooks";
 
 import Router from "./router";
+import Center from "../common/center/center";
 
 export default function Handler() {
 
@@ -30,22 +31,57 @@ export default function Handler() {
         })
     }, [socketHandler, dispatchLogin]);
 
+
+
     if (!socketHandler || loggingIn) {
-        return <p>Loading...</p>
+        return <Loader/>
     }
 
     return (
         <>
+            <Alert severity={"info"}>
+                <strong>NEW UPDATE!</strong> The project has been severely updated. Please report bugs in my&nbsp;
+                <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
+            </Alert>
+
             <CssBaseline/>
             <Container maxWidth={"xs"}>
-                <br/>
-                <Alert severity={"info"}>
-                    <strong>NEW UPDATE!</strong> The project has been severely updated. Please report bugs in my&nbsp;
-                    <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
-                </Alert>
             </Container>
 
             <Router/>
+        </>
+    )
+}
+
+function Loader() {
+
+    const socketHandler = usePacketHandler();
+    const [showMessage, setShowMessage] = useState(false);
+
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setShowMessage(true);
+        }, 3000);
+        return () => clearTimeout(id);
+    }, [socketHandler]);
+
+    return (
+        <>
+            {showMessage && (
+                <Alert severity={"error"}>
+                    Looks like you are having trouble connecting. Check my <Link href="https://discord.gg/dNWfCajm2F">discord</Link> for status updates.
+                </Alert>
+            )}
+            <CssBaseline/>
+            <Center>
+                <Container maxWidth={"sm"} align={"center"}>
+                    <Typography variant={"h4"} component={"h1"}>Connecting to server...</Typography>
+                    <br/><br/>
+                    <div style={{display: "flex", justifyContent: "center"}}>
+                        <CircularProgress size={48}/>
+                    </div>
+                </Container>
+            </Center>
         </>
     )
 }

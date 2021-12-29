@@ -5,7 +5,7 @@ export default createTheme({
         mode: "dark",
         primary: {
             main: "#ff412c",
-            contrastText: "#fff"
+            contrastText: "#000"
         },
         background: {
             default: "#191414",

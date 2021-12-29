@@ -63,6 +63,14 @@ public class Server {
 
         NettyServer nettyServer = new NettyServer(scheduler, packetHandler, url, host, port);
         nettyServer.start();
+
+        scheduler.repeat(() -> {
+            logger.info("---- STATISTICS ----");
+            logger.info("Total players: " + players.size());
+            logger.info("Players in party: " + parties.values().stream().mapToLong(p -> p.players().size()).sum());
+            logger.info("Total parties: " + parties.size());
+            logger.info("Parties in game: " + parties.values().stream().filter(p -> p.game() != null).count());
+        }, 30, TimeUnit.SECONDS);
     }
 
     public Collection<Card> cards() {
@@ -86,11 +94,15 @@ public class Server {
     }
 
     public void connect(Player player, ChannelHandler ch) {
+        Player old = playerByConnection(ch);
+        if ( old != null ) quit(old);
+
         players.put(player, ch);
         reconnectingPlayers.remove(player);
 
         Party party = partyByPlayer(player);
         if ( party == null || party.game() == null || !party.game().participants().containsKey(player)) {
+            sendPartyList(player);
             return;
         }
 
@@ -134,6 +146,14 @@ public class Server {
         if (party != null) {
             party.removePlayer(player);
             send(party.players(), PacketType.PARTY_UPDATE, party);
+
+            if ( party.players().size() == 0 ) {
+                parties.remove(party.id());
+            }
+
+            if ( party.settings().isVisible() ) {
+                sendPartyList();
+            }
         }
 
         send(player, PacketType.PARTY_UPDATE, null);
@@ -235,6 +255,25 @@ public class Server {
         send(ch, type, null);
     }
 
+    // --- party list ---
+
+    public void sendPartyList() {
+        Set<Player> players = this.players.keySet().stream()
+                .filter(p -> partyByPlayer(p) == null)
+                .collect(Collectors.toSet());
+        sendPartyList(players);
+    }
+
+    public void sendPartyList(Player player) {
+        sendPartyList(Collections.singletonList(player));
+    }
+
+    public void sendPartyList(Collection<Player> players) {
+        send(players, PacketType.PARTYLIST, parties.values().stream()
+                .filter(p -> p.settings().isVisible())
+                .collect(Collectors.toList()));
+    }
+
     // --- TIMERS ---
 
     public void startRoundTimer(Party party) {
@@ -245,9 +284,7 @@ public class Server {
         if (round == null)
             throw new IllegalArgumentException("No round has started for the given game");
 
-        if (round.timer() != null) {
-            round.timer().cancel();
-        }
+        party.cancelTimer();
 
         int duration;
         if ( round.status() == Round.RoundStatus.FINISHED ) {
@@ -260,6 +297,7 @@ public class Server {
             duration = round.status().defaultDuration() * party.settings().timerDurationMultiplier();
         }
 
+        logger.debug("Starting timer for party " + party.id());
         round.setTimer(scheduler.repeat(new Runnable() {
             private int count = duration;
 
@@ -277,18 +315,19 @@ public class Server {
     }
 
     public void advanceRound(Party party) {
-        if (party.game() == null)
-            throw new IllegalArgumentException("There is no game in progress for the given party.");
+        if (party.game() == null) {
+            logger.error("Cannot advance round, there is no game in progress for party " + party.id());
+            return;
+        }
 
         Game game = party.game();
-
-        Round round = party.game().round();
-        if (round == null)
-            throw new IllegalArgumentException("No round has started for the given game");
-
-        if (round.timer() != null) {
-            round.timer().cancel();
+        Round round = game.round();
+        if (round == null) {
+            game.nextRound();
+            return;
         }
+
+        party.cancelTimer();
 
         if (round.status() == Round.RoundStatus.FILLING) {
             if (!round.isBonusRound() && round.startCards().length == 1) {
@@ -320,6 +359,7 @@ public class Server {
         } else if (round.status() == Round.RoundStatus.FINISHED) {
             if (game.participants().values().stream().anyMatch(gp -> gp.score() >= party.settings().scoreLimit())) {
                 party.finish();
+                logger.debug("Finished game of party " + party.id());
                 send(party.players(), PacketType.PARTY_UPDATE, party);
                 return;
             }
@@ -337,6 +377,7 @@ public class Server {
         // stop game if there are not enough players
         if (party.players().size() < 3) {
             party.finish();
+            logger.debug("Finished game of party " + party.id());
             send(party.players(), PacketType.PARTY_UPDATE, party);
             return;
         }

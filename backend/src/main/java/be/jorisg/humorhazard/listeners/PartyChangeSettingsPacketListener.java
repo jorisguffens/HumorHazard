@@ -64,7 +64,12 @@ public class PartyChangeSettingsPacketListener extends AbstractPacketListener {
 
         if ( payload.has("visible") ) {
             boolean visible = payload.get("visible").asBoolean();
+            boolean previous = party.settings().isVisible();
             party.settings().setVisible(visible);
+
+            if ( visible && !previous ) {
+                server.sendPartyList();
+            }
         }
 
         server.send(party.players(), PacketType.PARTY_UPDATE_SETTINGS, party.settings());

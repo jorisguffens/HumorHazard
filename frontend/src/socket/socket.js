@@ -40,7 +40,6 @@ export function Socket(url) {
         }
 
         websocket.onopen = onopen;
-        websocket.onerror = onerror;
         websocket.onclose = onclose;
         websocket.onmessage = onmessage;
     };
@@ -74,7 +73,6 @@ export function Socket(url) {
     };
 
     const onopen = function () {
-        console.log("Connection opened.");
         events['open'].map((item) => item())
 
         for (let i = 0; i < queue.length; i++) {
@@ -83,13 +81,7 @@ export function Socket(url) {
         queue = [];
     };
 
-    const onerror = function () {
-        console.log("Connection error.");
-        reconnect();
-    };
-
     const onclose = function () {
-        console.log("Connection closed.");
         events['close'].map((item) => item())
         websocket = null;
         reconnect();

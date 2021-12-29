@@ -1,6 +1,18 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useCallback} from "react";
 
+export function useDispatchLogout() {
+    const dispatch = useDispatch();
+    return useCallback(() => {
+        dispatch({
+            type: "LOGOUT",
+            action: () => {
+                return {}
+            }
+        });
+    }, [dispatch]);
+}
+
 export function useDispatchLogin() {
     const dispatch = useDispatch();
     return useCallback((player) => {

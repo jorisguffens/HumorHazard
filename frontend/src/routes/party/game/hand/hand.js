@@ -64,7 +64,7 @@ export default function Hand() {
         if (isPlayerPick) {
             select([card.id]);
         }
-    }, [select, isJudgePick, selected]);
+    }, [select, isJudgePick, selected, round, isPlayerPick]);
 
     const disabled = useCallback((card) => {
         return (!isJudgePick && !isPlayerPick) || (card.type === "RED" && (isJudgePick || round.bonus_round))

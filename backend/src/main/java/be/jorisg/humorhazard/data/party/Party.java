@@ -100,15 +100,19 @@ public class Party {
             throw new IllegalStateException("There is no game in progress.");
         }
 
-        if ( game.round() != null && game.round().timer() != null ) {
-            game.round().timer().cancel();
-        }
+        cancelTimer();
 
         this.winner = game.participants().entrySet().stream()
                 .max(Comparator.comparingInt(e -> e.getValue().score()))
                 .map(Map.Entry::getKey).orElse(null);
 
         this.game = null;
+    }
+
+    public void cancelTimer() {
+        if ( game != null && game.round() != null && game.round().timer() != null) {
+            game.round().timer().cancel();
+        }
     }
 
 }
