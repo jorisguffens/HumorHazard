@@ -13,5 +13,4 @@ FROM azul/zulu-openjdk-alpine:17
 
 WORKDIR /opt/app
 COPY --from=build /tmp/app/build/libs/ ./
-
-CMD java -jar HumorHazardServer.jar
+ENTRYPOINT java -jar HumorHazardServer.jar

@@ -18,3 +18,5 @@ services:
       - 82:80
     volumes:
       - ./logs:/opt/app/logs
+    stdin_open: true
+    tty: true
