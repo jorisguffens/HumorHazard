@@ -8,10 +8,10 @@ COPY settings.gradle ./
 
 RUN gradle shadowJar --no-daemon
 
-FROM eclipse-temurin:17-alpine
 
-WORKDIR /usr/src/app
+FROM azul/zulu-openjdk-alpine:17
 
+WORKDIR /opt/app
 COPY --from=build /tmp/app/build/libs/ ./
 
-ENTRYPOINT ["/usr/bin/java", "-jar", "HumorHazardServer.jar"]
+CMD java -jar HumorHazardServer.jar

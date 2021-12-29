@@ -21,10 +21,10 @@
     <Loggers>
         <Logger name="be.jorisg.humorhazard" additivity="false">
             <AppenderRef ref="fileLogger" level="all"/>
-            <AppenderRef ref="Console" level="all"/>
+            <AppenderRef ref="Console" level="info"/>
         </Logger>
 
-        <Root level="debug">
+        <Root level="info">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>
