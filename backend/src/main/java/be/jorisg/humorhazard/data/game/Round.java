@@ -100,11 +100,14 @@ public class Round {
         this.winner = winner;
     }
 
-    public SchedulerTask timer() {
-        return timer;
+    public void cancelTimer() {
+        if ( timer != null ) {
+            timer.cancel();
+        }
     }
 
     public void setTimer(SchedulerTask timer) {
+        cancelTimer();
         this.timer = timer;
     }
 

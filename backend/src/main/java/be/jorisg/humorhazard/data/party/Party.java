@@ -105,8 +105,8 @@ public class Party {
     }
 
     public void cancelTimer() {
-        if (game != null && game.round() != null && game.round().timer() != null) {
-            game.round().timer().cancel();
+        if (game != null ) {
+            game.cancelTimer();
         }
     }
 

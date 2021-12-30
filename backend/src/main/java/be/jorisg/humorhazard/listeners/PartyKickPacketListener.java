@@ -47,7 +47,7 @@ public class PartyKickPacketListener extends AbstractPacketListener {
             return;
         }
 
-        party.removePlayer(target);
+        server.quitParty(target);
         respond.accept(type, null);
 
         server.send(target, PacketType.PARTY_KICK);

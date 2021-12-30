@@ -156,7 +156,7 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
             return;
         }
 
-        logger.debug("IN " + remoteAddr + ": " + message);
+        logger.debug("IN " + String.format("%15s", remoteAddr) + ": " + message);
 
         try {
             JsonNode packet = HumorHazard.objectMapper.readTree(message);
@@ -169,7 +169,7 @@ public class SimpleChannelHandler extends SimpleChannelInboundHandler<Object> im
     // INTERFACE
 
     public void send(String message) {
-        logger.debug("OUT " + remoteAddr + ": " + message);
+        logger.debug("OUT " + String.format("%15s", remoteAddr) + ": " + message);
         ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
     }
 

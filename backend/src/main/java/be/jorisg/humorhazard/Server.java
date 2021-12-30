@@ -145,6 +145,8 @@ public class Server {
                 party.finish();
                 logger.debug("Finished game of party " + party.id());
                 send(party.players(), PacketType.PARTY_UPDATE, party);
+            } else if ( party.game() != null && party.game().round().judge() == player ) {
+                party.game().nextRound();
             }
 
             if (party.settings().isVisible()) {
@@ -283,8 +285,6 @@ public class Server {
             return;
         }
 
-        party.cancelTimer();
-
         int duration;
         if (round.status() == Round.RoundStatus.FINISHED) {
             duration = round.status().defaultDuration();
@@ -324,7 +324,7 @@ public class Server {
             return;
         }
 
-        party.cancelTimer();
+        round.cancelTimer();
 
         if (round.status() == Round.RoundStatus.FILLING) {
             if (!round.isBonusRound() && round.startCards().length == 1) {
@@ -376,7 +376,7 @@ public class Server {
             return;
         }
 
-        send(party.players(), PacketType.GAME_UPDATE, party.game());
+        send(party.players(), PacketType.GAME_ROUND_UPDATE, game.round());
         party.game().participants().forEach((key, value) ->
                 send(key, PacketType.GAME_HAND_UPDATE, value.hand()));
 

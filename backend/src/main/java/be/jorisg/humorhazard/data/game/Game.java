@@ -59,9 +59,6 @@ public class Game {
 
         if (round != null) {
             round.removePlayer(player);
-            if (round.judge() == player) {
-                nextRound();
-            }
         }
     }
 
@@ -82,6 +79,7 @@ public class Game {
     }
 
     public void nextRound() {
+        cancelTimer();
 
         // convert spectators to participants
         for (Player player : spectators) {
@@ -113,6 +111,12 @@ public class Game {
         // create round
         this.round = new Round(judge, deck.take());
         roundNumber++;
+    }
+
+    public void cancelTimer() {
+        if (round != null ) {
+            round.cancelTimer();
+        }
     }
 
 }
