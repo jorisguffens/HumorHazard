@@ -46,6 +46,13 @@ export default createTheme({
                     transform: "translateX(-12px)"
                 }
             }
-        }
+        },
+        MuiToggleButton: {
+            styleOverrides: {
+                root: {
+                    padding: "5px 15px"
+                }
+            }
+        },
     }
 });

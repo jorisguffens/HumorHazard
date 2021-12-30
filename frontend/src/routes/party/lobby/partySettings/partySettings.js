@@ -1,5 +1,5 @@
 import {useCallback, useEffect} from "react";
-import {Grid, MenuItem, Select, Slider, Stack, Switch} from "@mui/material";
+import {Grid, MenuItem, Select, Slider, Stack, Switch, ToggleButton, ToggleButtonGroup} from "@mui/material";
 
 import {useDispatchPartySettings, usePartyPlayers, usePartySettings, usePlayer} from "../../../../redux/hooks";
 
@@ -43,11 +43,16 @@ export default function PartySettings() {
         <>
             <Grid container className={style.settingGroup}>
                 <Grid item xs={6} className={style.settingLabel}>
-                    Public party
+                    Party visibility
                 </Grid>
                 <Grid item xs={6}>
-                    <Switch checked={settings.visible} disabled={disabled}
-                            onChange={(e) => update("visible", !settings.visible)}/>
+                    <ToggleButtonGroup color="primary" value={settings.visible} exclusive disabled={disabled}
+                                       onChange={(e, value) => update("visible", value)}>
+                        <ToggleButton value={true}>Public</ToggleButton>
+                        <ToggleButton value={false}>Private</ToggleButton>
+                    </ToggleButtonGroup>
+                    {/*<Switch checked={settings.visible} disabled={disabled}*/}
+                    {/*        onChange={(e) => update("visible", !settings.visible)}/>*/}
                 </Grid>
             </Grid>
 
