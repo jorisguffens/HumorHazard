@@ -108,6 +108,14 @@ export function Socket(url) {
 
     this.registerListener = function (type, func) {
         events[type].push(func);
+        return function () {
+            let index = events[type].indexOf(func);
+            if (index !== -1) {
+                events[type].splice(index, 1);
+                return true;
+            }
+            return false;
+        }
     }
 
 }

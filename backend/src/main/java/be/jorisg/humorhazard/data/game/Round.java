@@ -6,6 +6,7 @@ import be.jorisg.humorhazard.data.card.CardType;
 import be.jorisg.humorhazard.scheduler.SchedulerTask;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Joris on 14/04/2020 in project HumorHazardServer.
@@ -19,7 +20,7 @@ public class Round {
     private Card[] startCards;
 
     private RoundStatus status = RoundStatus.FILLING;
-    private final Map<Player, Card[]> picks = new HashMap<>();
+    private final Map<Player, Card[]> picks = new ConcurrentHashMap<>();
     private Player winner = null;
 
     private SchedulerTask timer;
@@ -85,7 +86,6 @@ public class Round {
 
     public void setPlayerCards(Player player, Card[] cards) {
         picks.put(player, cards);
-
     }
 
     public void changeStatus(RoundStatus status) {

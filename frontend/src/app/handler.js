@@ -25,7 +25,6 @@ export default function Handler() {
             return;
         }
 
-        setLoggingIn(true);
         socketHandler.sendc("LOGIN", {token}).then((player) => {
             dispatchLogin(player);
         })
@@ -40,7 +39,9 @@ export default function Handler() {
     useEffect(() => {
         if (!socketHandler) return;
         login();
-        socketHandler.registerOpenListener(() => login());
+
+        const unreg = socketHandler.registerOpenListener(() => login());
+        return () => unreg();
     }, [socketHandler, login]);
 
     if (!socketHandler || loggingIn) {

@@ -83,11 +83,11 @@ function PacketHandler(socket) {
     };
 
     this.registerOpenListener = function(func) {
-        socket.registerListener("open", func);
+        return socket.registerListener("open", func);
     }
 
     this.registerCloseListener = function(func) {
-        socket.registerListener("close", func);
+        return socket.registerListener("close", func);
     }
 }
 

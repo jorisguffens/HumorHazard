@@ -29,8 +29,6 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
         Party party = server.partyById(payload.get("party").asText());
         if ( party == null ) {
             party = server.createParty(payload.get("party").asText());
-//            respond.accept(type, new Error("Party does not exist."));
-//            return;
         }
 
         if ( party.players().contains(player) ) {
@@ -44,14 +42,20 @@ public class PartyJoinPacketListener extends AbstractPacketListener {
             return;
         }
 
+        Party old = server.partyByPlayer(player);
+        if ( old != null ) {
+            server.quitParty(player);
+        }
+
         party.addPlayer(player);
-        server.send(party.players(), PacketType.PARTY_UPDATE, party);
+        respond.accept(type, party);
+
+        server.send(party.players(), PacketType.PARTY_PLAYERS_UPDATE, party.players());
 
         if ( party.settings().isVisible() ) {
             server.sendPartyList();
         }
 
-        respond.accept(type, party);
         update(player, party);
     }
 

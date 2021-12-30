@@ -51,22 +51,19 @@ export default function Party() {
     }, [player, party, partyid, packetHandler, dispatchParty, navigate]);
 
     useEffect(() => {
-        const unregister = packetHandler.registerTypeListener("PARTY_UPDATE", (party) => {
-            if ( !party ) {
-                navigate("/");
-                return;
+        const unregister = packetHandler.registerListener((packet) => {
+            if ( packet.type === "PARTY_UPDATE" ) {
+                if (!packet.payload) {
+                    navigate("/");
+                    return;
+                }
+                dispatchParty(packet.payload);
+            } else if ( packet.type === "PARTY_PLAYERS_UPDATE" ) {
+                dispatchPartyPlayers(packet.payload);
             }
-            dispatchParty(party);
         });
         return () => unregister();
-    }, [packetHandler, navigate, dispatchParty]);
-
-    useEffect(() => {
-        const unregister = packetHandler.registerTypeListener("PARTY_PLAYERS_UPDATE", (party) => {
-            dispatchPartyPlayers(party);
-        });
-        return () => unregister();
-    }, [packetHandler, navigate, dispatchParty]);
+    }, [packetHandler, navigate, dispatchParty, dispatchPartyPlayers]);
 
     if (!player) {
         return <Register/>

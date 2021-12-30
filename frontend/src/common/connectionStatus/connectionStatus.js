@@ -8,8 +8,13 @@ export default function ConnectionStatus() {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        packetHandler.registerOpenListener(() => setOpen(false));
-        packetHandler.registerCloseListener(() => setOpen(true));
+        const unrego = packetHandler.registerOpenListener(() => setOpen(false));
+        const unregc = packetHandler.registerCloseListener(() => setOpen(true));
+
+        return () => {
+            unrego();
+            unregc();
+        }
     }, [packetHandler]);
 
     useEffect(() => {

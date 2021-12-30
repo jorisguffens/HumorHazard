@@ -87,24 +87,24 @@ public class Server {
 
     public void connect(Player player, ChannelHandler ch) {
         Player old = playerByConnection(ch);
-        if ( old != null ) quit(old);
+        if (old != null) quit(old);
 
         players.put(player, ch);
         reconnectingPlayers.remove(player);
 
         Party party = partyByPlayer(player);
-        if ( party == null || party.game() == null || !party.game().participants().containsKey(player)) {
+        if (party == null || party.game() == null || !party.game().participants().containsKey(player)) {
             sendPartyList(player);
             return;
         }
 
         party.game().participants().get(player).setDisconnected(false);
-        send(party.players(), PacketType.PARTY_UPDATE, party);
+        send(party.players(), PacketType.GAME_PARTICIPANTS_UPDATE, party.game().gamePlayers());
     }
 
     public void disconnect(ChannelHandler ch) {
         Player player = playerByConnection(ch);
-        if ( player == null ) {
+        if (player == null) {
             return;
         }
 
@@ -128,7 +128,7 @@ public class Server {
         }
 
         party.game().participants().get(player).setDisconnected(true);
-        send(party.players(), PacketType.PARTY_UPDATE, party);
+        send(party.players(), PacketType.GAME_PARTICIPANTS_UPDATE, party.game().gamePlayers());
 
         quitTimer(player, 30); // party ingame
     }
@@ -137,15 +137,17 @@ public class Server {
         Party party = partyByPlayer(player);
         if (party != null) {
             party.removePlayer(player);
-            send(party.players(), PacketType.PARTY_UPDATE, party);
+            send(party.players(), PacketType.PARTY_PLAYERS_UPDATE, party.players());
 
-            if ( party.players().size() == 0 ) {
+            if (party.players().size() == 0) {
                 parties.remove(party.id());
-            } else if ( party.players().size() < 3 && party.game() != null ) {
+            } else if (party.players().size() < 3 && party.game() != null) {
                 party.finish();
+                logger.debug("Finished game of party " + party.id());
+                send(party.players(), PacketType.PARTY_UPDATE, party);
             }
 
-            if ( party.settings().isVisible() ) {
+            if (party.settings().isVisible()) {
                 sendPartyList();
             }
         }
@@ -231,7 +233,7 @@ public class Server {
 
     public void send(Player p, PacketType type, Object payload) {
         ChannelHandler ch = players.get(p);
-        if ( ch != null ) {
+        if (ch != null) {
             send(ch, type, payload);
         }
     }
@@ -284,13 +286,11 @@ public class Server {
         party.cancelTimer();
 
         int duration;
-        if ( round.status() == Round.RoundStatus.FINISHED ) {
+        if (round.status() == Round.RoundStatus.FINISHED) {
             duration = round.status().defaultDuration();
-        }
-        else if (party.settings().timerDurationMultiplier() == 0) {
+        } else if (party.settings().timerDurationMultiplier() == 0) {
             return; // no timer
-        }
-        else {
+        } else {
             duration = round.status().defaultDuration() * party.settings().timerDurationMultiplier();
         }
 
@@ -334,13 +334,13 @@ public class Server {
                 round.changeStatus(Round.RoundStatus.PICKING);
             }
         } else if (round.status() == Round.RoundStatus.PICKING) {
-            game.participants().entrySet().stream().filter(e -> !round.picks().containsKey(e.getKey()))
+            game.participants().entrySet().stream()
+                    .filter(e -> !round.pickedPlayers().contains(e.getKey()) && round.judge() != e.getKey())
                     .forEach(e -> e.getValue().increaseAfkCount());
 
             if (round.picks().isEmpty()) {
                 game.nextRound();
-            }
-            else if ( round.picks().size() == 1 ) {
+            } else if (round.picks().size() == 1) {
                 round.setWinner(round.picks().keySet().stream().findFirst().orElse(null));
                 round.changeStatus(Round.RoundStatus.FINISHED);
             } else {
@@ -365,17 +365,14 @@ public class Server {
         }
 
         // remove afk players
-        Set<Player> afkPlayers = game.participants().entrySet().stream()
+        game.participants().entrySet().stream()
                 .filter(e -> e.getValue().afkCount() >= 2)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
-        afkPlayers.forEach(this::quitParty);
+                .collect(Collectors.toSet())
+                .forEach(this::quitParty);
 
-        // stop game if there are not enough players
-        if (party.players().size() < 3) {
-            party.finish();
-            logger.debug("Finished game of party " + party.id());
-            send(party.players(), PacketType.PARTY_UPDATE, party);
+        if (party.game() == null) {
+            // game was stopped because afk players were kicked
             return;
         }
 

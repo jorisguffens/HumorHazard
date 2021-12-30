@@ -57,6 +57,7 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
         }
 
         Round round = game.round();
+        game.participants().get(player).resetAfkCount();
 
         // judge fill card
         if (round.status() == Round.RoundStatus.FILLING ) {

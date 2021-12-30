@@ -1,11 +1,12 @@
 package be.jorisg.humorhazard.data.game;
 
 import be.jorisg.humorhazard.data.Player;
-import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.card.CardType;
 import be.jorisg.humorhazard.data.card.Deck;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -14,8 +15,8 @@ public class Game {
 
     private final Set<Player> pastJudges = new HashSet<>();
 
-    private final Set<Player> spectators = new HashSet<>();
-    private final Map<Player, GamePlayer> participants = new LinkedHashMap<>();
+    private final Set<Player> spectators = new CopyOnWriteArraySet<>();
+    private final Map<Player, GamePlayer> participants = Collections.synchronizedMap(new LinkedHashMap<>());
 
     private final Deck deck;
 
@@ -43,14 +44,22 @@ public class Game {
         return Collections.unmodifiableMap(participants);
     }
 
+    public Map<String, GamePlayer> gamePlayers() {
+        return participants.entrySet().stream()
+                .collect(Collectors.toMap(
+                        (e) -> e.getKey().id(),
+                        Map.Entry::getValue
+                ));
+    }
+
     public void removePlayer(Player player) {
         pastJudges.remove(player);
         participants.remove(player);
         spectators.remove(player);
 
-        if ( round != null ) {
+        if (round != null) {
             round.removePlayer(player);
-            if ( round.judge() == player ) {
+            if (round.judge() == player) {
                 nextRound();
             }
         }
@@ -64,7 +73,7 @@ public class Game {
         // make sure the player doesn't have more than 3 red cards
         int redcards = (int) gp.hand().stream().filter(c -> c.type() == CardType.RED).count();
 
-        if ( redcards >= 3 ) {
+        if (redcards >= 3) {
             gp.giveCard(deck.take(CardType.BLACK));
             return;
         }
@@ -75,9 +84,9 @@ public class Game {
     public void nextRound() {
 
         // convert spectators to participants
-        for ( Player player : spectators ) {
+        for (Player player : spectators) {
             GamePlayer gp = new GamePlayer();
-            for ( int i = 0; i < 7; i++ ) {
+            for (int i = 0; i < 7; i++) {
                 giveCard(gp);
             }
 
@@ -86,16 +95,16 @@ public class Game {
         spectators.clear();
 
         // give everyone new cards
-        for ( Player p : participants.keySet() ) {
+        for (Player p : participants.keySet()) {
             GamePlayer gp = participants.get(p);
-            while ( gp.hand().size() < 7 ) {
+            while (gp.hand().size() < 7) {
                 giveCard(gp);
             }
         }
 
         // next judge
         Player judge = participants.keySet().stream().filter(p -> !pastJudges.contains(p)).findFirst().orElse(null);
-        if ( judge == null ) {
+        if (judge == null) {
             pastJudges.clear();
             judge = participants.keySet().stream().findFirst().orElse(null);
         }

@@ -51,7 +51,7 @@ public class PartyKickPacketListener extends AbstractPacketListener {
         respond.accept(type, null);
 
         server.send(target, PacketType.PARTY_KICK);
-        server.send(party.players(), PacketType.PARTY_UPDATE, party);
+        server.send(party.players(), PacketType.PARTY_PLAYERS_UPDATE, party.players());
     }
 
 }

@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import {Button, Container, Divider, Link, Paper, Typography} from "@mui/material";
 
-import {useDispatchLogout, useDispatchParty, useParty, usePlayer} from "../../redux/hooks";
+import {useDispatchLogout, useDispatchParty, usePlayer} from "../../redux/hooks";
 
 import Center from "../../common/center/center";
 import Register from "../../common/register/register";
@@ -31,7 +31,7 @@ export default function Landing() {
     useEffect(() => {
         packetHandler.send("PARTY_QUIT");
         dispatchParty(null);
-    }, [packetHandler]);
+    }, [packetHandler, dispatchParty]);
 
     useEffect(() => {
         const unregister = packetHandler.registerTypeListener("PARTYLIST", (list) => {

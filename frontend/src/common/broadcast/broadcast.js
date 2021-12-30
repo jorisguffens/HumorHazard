@@ -1,8 +1,8 @@
 import {usePacketHandler} from "../../socket/packetHandler";
-import {Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Link} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Link} from "@mui/material";
 import React, {useEffect, useState} from "react";
 
-const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/;
 
 export default function Broadcast() {
 

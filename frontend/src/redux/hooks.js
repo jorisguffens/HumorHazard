@@ -126,6 +126,18 @@ export function useDispatchGameRound() {
     }, [dispatch]);
 }
 
+export function useDispatchGameParticipants() {
+    const dispatch = useDispatch();
+    return useCallback((participants) => {
+        dispatch({
+            type: "GAME_PARTICIPANTS",
+            action: (state) => {
+                return {...state, party: {...state.party, game: {...state.party.game, participants}}}
+            }
+        });
+    }, [dispatch]);
+}
+
 // -------------------
 
 export function usePlayer() {

@@ -8,7 +8,7 @@ import PlayerList from "./playerList/playerList";
 import style from "./game.module.scss";
 import {useEffect} from "react";
 import {usePacketHandler} from "../../../socket/packetHandler";
-import {useDispatchGame, useDispatchGameRound} from "../../../redux/hooks";
+import {useDispatchGame, useDispatchGameParticipants, useDispatchGameRound} from "../../../redux/hooks";
 import Status from "./status/status";
 
 export default function Game() {
@@ -16,6 +16,7 @@ export default function Game() {
     const packetHandler = usePacketHandler();
     const dispatchGame = useDispatchGame();
     const dispatchGameRound = useDispatchGameRound();
+    const dispatchGameParticipants = useDispatchGameParticipants();
 
     useEffect(() => {
         const unregister = packetHandler.registerListener((packet) => {
@@ -23,10 +24,12 @@ export default function Game() {
                 dispatchGame(packet.payload);
             } else if (packet.type === "GAME_ROUND_UPDATE") {
                 dispatchGameRound(packet.payload);
+            } else if ( packet.type === "GAME_PARTICIPANTS_UPDATE" ) {
+                dispatchGameParticipants(packet.payload);
             }
         });
         return () => unregister();
-    }, [packetHandler, dispatchGame, dispatchGameRound]);
+    }, [packetHandler, dispatchGame, dispatchGameRound, dispatchGameParticipants]);
 
     return (
         <Container maxWidth={"xl"}>
