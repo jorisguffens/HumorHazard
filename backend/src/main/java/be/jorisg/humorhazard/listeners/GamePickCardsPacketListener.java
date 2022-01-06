@@ -135,8 +135,6 @@ public class GamePickCardsPacketListener extends AbstractPacketListener {
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
         round.setWinner(winner);
-        party.game().participants().get(winner).increaseScore(round.reward());
-
         server.advanceRound(party);
     }
 

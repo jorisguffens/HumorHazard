@@ -352,6 +352,9 @@ public class Server {
                 game.nextRound();
             } else {
                 round.changeStatus(Round.RoundStatus.FINISHED);
+
+                party.game().participants().get(round.winner()).increaseScore(round.reward());
+                send(party.players(), PacketType.GAME_PARTICIPANTS_UPDATE, game.gamePlayers());
             }
         } else if (round.status() == Round.RoundStatus.FINISHED) {
             if (game.participants().values().stream().anyMatch(gp -> gp.score() >= party.settings().scoreLimit())) {

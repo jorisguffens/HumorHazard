@@ -29,7 +29,7 @@ public class Round {
         this.judge = judge;
         this.startCards = new Card[] { startCard };
         this.bonusRound = bonusRound;
-        this.reward = bonusRound ? 2 : 1;
+        this.reward = 1;
 
         if ( bonusRound ) {
             status = RoundStatus.PICKING;
