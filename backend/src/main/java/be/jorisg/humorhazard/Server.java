@@ -4,6 +4,7 @@ import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
 import be.jorisg.humorhazard.data.game.Game;
 import be.jorisg.humorhazard.data.game.Round;
+import be.jorisg.humorhazard.data.party.ChatMessage;
 import be.jorisg.humorhazard.data.party.Party;
 import be.jorisg.humorhazard.listeners.*;
 import be.jorisg.humorhazard.netty.ChannelHandler;
@@ -58,6 +59,7 @@ public class Server {
         packetHandler.registerPacketListener(PacketType.PARTY_START_GAME, new PartyStartGamePacketListener(this));
         packetHandler.registerPacketListener(PacketType.PARTY_INFO, new PartyInfoPacketListener(this));
         packetHandler.registerPacketListener(PacketType.GAME_PICK_CARDS, new GamePickCardsPacketListener(this));
+        packetHandler.registerPacketListener(PacketType.PARTY_CHAT_MESSAGE, new PartyChatMessagePacketListener(this));
 
         packetHandler.registerDisconnectListener(this::disconnect);
 
@@ -134,27 +136,29 @@ public class Server {
     }
 
     public void quitParty(Player player) {
+        send(player, PacketType.PARTY_UPDATE, null);
+
         Party party = partyByPlayer(player);
-        if (party != null) {
-            party.removePlayer(player);
-            send(party.players(), PacketType.PARTY_PLAYERS_UPDATE, party.players());
-
-            if (party.players().size() == 0) {
-                parties.remove(party.id());
-            } else if (party.players().size() < 3 && party.game() != null) {
-                party.finish();
-                logger.debug("Finished game of party " + party.id());
-                send(party.players(), PacketType.PARTY_UPDATE, party);
-            } else if ( party.game() != null && party.game().round().judge() == player ) {
-                party.game().nextRound();
-            }
-
-            if (party.settings().isVisible()) {
-                sendPartyList();
-            }
+        if (party == null) {
+            return;
         }
 
-        send(player, PacketType.PARTY_UPDATE, null);
+        party.removePlayer(player);
+        send(party.players(), PacketType.PARTY_PLAYERS_UPDATE, party.players());
+
+        if (party.players().size() == 0) {
+            parties.remove(party.id());
+        } else if (party.players().size() < 3 && party.game() != null) {
+            party.finish();
+            logger.debug("Finished game of party " + party.id());
+            send(party.players(), PacketType.PARTY_UPDATE, party);
+        } else if (party.game() != null && party.game().round().judge() == player) {
+            party.game().nextRound();
+        }
+
+        if (party.settings().isVisible()) {
+            sendPartyList();
+        }
     }
 
     public void quit(Player player) {
@@ -192,6 +196,12 @@ public class Server {
 
     public void removeParty(Party party) {
         parties.remove(party.id());
+    }
+
+    public Player playerByName(String name) {
+        return players.keySet().stream()
+                .filter(player -> player.name().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
     }
 
     public Player playerById(String id) {
@@ -353,6 +363,9 @@ public class Server {
             } else {
                 round.changeStatus(Round.RoundStatus.FINISHED);
 
+                send(party.players(), PacketType.PARTY_CHAT_MESSAGE, new ChatMessage("system", "The winner of round " +
+                        game.roundNumber() + " is " + round.winner().name() + "."));
+
                 party.game().participants().get(round.winner()).increaseScore(round.reward());
                 send(party.players(), PacketType.GAME_PARTICIPANTS_UPDATE, game.gamePlayers());
             }
@@ -361,6 +374,11 @@ public class Server {
                 party.finish();
                 logger.debug("Finished game of party " + party.id());
                 send(party.players(), PacketType.PARTY_UPDATE, party);
+
+                if ( party.winner() != null ) {
+                    send(party.players(), PacketType.PARTY_CHAT_MESSAGE, new ChatMessage("system",
+                            "The winner of the game is " + party.winner().name() + "."));
+                }
                 return;
             }
 
@@ -372,7 +390,12 @@ public class Server {
                 .filter(e -> e.getValue().afkCount() >= 2)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet())
-                .forEach(this::quitParty);
+                .forEach(p -> {
+                    send(party.players(), PacketType.PARTY_CHAT_MESSAGE, new ChatMessage("system",
+                            p.name() + " has been kicked for being afk."));
+
+                    quitParty(p);
+                });
 
         if (party.game() == null) {
             // game was stopped because afk players were kicked

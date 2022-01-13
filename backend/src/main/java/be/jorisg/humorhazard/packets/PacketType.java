@@ -15,6 +15,8 @@ public enum PacketType {
     // players
     GAME_PICK_CARDS,
 
+    PARTY_CHAT_MESSAGE, // also outbound
+
     // --- OUTBOUND ---
 
     PARTYLIST,ALERT,

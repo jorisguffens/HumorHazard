@@ -1,5 +1,6 @@
 package be.jorisg.humorhazard;
 
+import be.jorisg.humorhazard.data.party.ChatMessage;
 import be.jorisg.humorhazard.data.Error;
 import be.jorisg.humorhazard.data.Player;
 import be.jorisg.humorhazard.data.card.Card;
@@ -11,15 +12,11 @@ import be.jorisg.humorhazard.data.party.PartySettings;
 import be.jorisg.humorhazard.serialization.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Joris on 3/04/2020 in project HumorHazard.
  */
 public class HumorHazard {
-
-    private static final Logger logger = LogManager.getLogger(HumorHazard.class);
 
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -44,6 +41,7 @@ public class HumorHazard {
         module.addSerializer(Round.class, new RoundSerializer());
         module.addSerializer(Error.class, new ErrorSerializer());
         module.addSerializer(GamePlayer.class, new GamePlayerSerializer());
+        module.addSerializer(ChatMessage.class, new ChatMessageSerializer());
 
         objectMapper.registerModule(module);
 

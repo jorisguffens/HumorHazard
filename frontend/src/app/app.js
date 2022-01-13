@@ -8,6 +8,8 @@ import store from "../redux/store";
 import theme from "./theme";
 import Handler from "./handler";
 
+import "./style.scss";
+
 export default function App() {
 
     React.useEffect(function () {

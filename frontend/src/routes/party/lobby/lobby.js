@@ -10,6 +10,7 @@ import PartyLink from "../../../common/partylink/partylink";
 
 import PlayerList from "./playerList/playerList";
 import PartySettings from "./partySettings/partySettings";
+import Chatbox from "../../../common/chatbox/chatbox";
 
 import style from "./lobby.module.scss"
 
@@ -76,8 +77,14 @@ export default function Lobby() {
                         </Grid>
                     </Grid>
                     <br/>
+                    <Divider/>
+                    <br/>
+                    <Typography variant={"h5"} component={"h2"} className={style.subTitle}>
+                        Chatbox
+                    </Typography>
+                    <br/>
                     <Grid container>
-
+                        <Chatbox/>
                     </Grid>
 
                 </Paper>

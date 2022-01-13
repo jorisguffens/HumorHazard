@@ -23,6 +23,8 @@ public class Party {
 
     private final Deck deck;
 
+    private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
+
     public Party(String id, Collection<Card> cards) {
         this.id = id;
         this.deck = new Deck(cards);
@@ -108,6 +110,17 @@ public class Party {
         if (game != null ) {
             game.cancelTimer();
         }
+    }
+
+    public void addChatMessage(ChatMessage message) {
+        if( chatMessages.size() >= 10 ) {
+            chatMessages.remove(0);
+        }
+        chatMessages.add(message);
+    }
+
+    public List<ChatMessage> chatMessages() {
+        return Collections.unmodifiableList(chatMessages);
     }
 
 }

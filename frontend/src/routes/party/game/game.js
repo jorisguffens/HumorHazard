@@ -10,6 +10,7 @@ import {useEffect} from "react";
 import {usePacketHandler} from "../../../socket/packetHandler";
 import {useDispatchGame, useDispatchGameParticipants, useDispatchGameRound} from "../../../redux/hooks";
 import Status from "./status/status";
+import Chatbox from "../../../common/chatbox/chatbox";
 
 export default function Game() {
 
@@ -32,7 +33,7 @@ export default function Game() {
     }, [packetHandler, dispatchGame, dispatchGameRound, dispatchGameParticipants]);
 
     return (
-        <Container maxWidth={"xl"}>
+        <Container maxWidth={false}>
             <br/>
             <Paper className={style.paper}>
                 <Grid container>
@@ -58,14 +59,14 @@ export default function Game() {
             <Divider/>
             <br/>
 
-            <Grid container>
+            <Grid container spacing={2}>
                 <Grid item sm={6} md={4} xs={12}>
                     <Paper className={style.paper}>
                         <PlayerList/>
                     </Paper>
                 </Grid>
                 <Grid item sm={6} md={8} xs={12}>
-
+                    <Chatbox/>
                 </Grid>
             </Grid>
             <br/>

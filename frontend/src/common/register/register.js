@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react";
 
-import {Container, FormLabel, Link, Paper, TextField, Typography} from "@mui/material";
+import {Alert, Container, FormLabel, Link, Paper, TextField, Typography} from "@mui/material";
 import {usePacketHandler} from "../../socket/packetHandler";
 import {useDispatchLogin} from "../../redux/hooks";
 
@@ -17,6 +17,7 @@ export default function Register() {
 
     const defaultName = localStorage.getItem("name");
     const [name, setName] = useState(defaultName || "");
+    const [error, setError] = useState(null);
 
     const submit = useCallback((e) => {
         e.preventDefault();
@@ -25,6 +26,7 @@ export default function Register() {
         packetHandler.sendc("REGISTER", {name}).then((player) => {
             dispatchLogin(player);
         }).catch(err => {
+            setError(err);
             console.error(err);
         })
     }, [name, packetHandler, dispatchLogin]);
@@ -45,7 +47,13 @@ export default function Register() {
                         <TextField placeholder="Name" required autoFocus spellCheck="false" fullWidth
                                    value={name} onChange={e => setName(e.target.value)}/>
                     </form>
-                    <br/><br/>
+                    <br/>
+
+                    { error && (
+                        <Alert severity={"error"}>{error}</Alert>
+                    )}
+
+                    <br/>
 
                     <div>
                         <Typography variant="h5" component="h2">

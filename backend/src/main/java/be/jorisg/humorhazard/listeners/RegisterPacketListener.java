@@ -26,13 +26,13 @@ public class RegisterPacketListener extends AbstractPacketListener {
         }
 
         String name = payload.get("name").asText();
-        if ( name.length() <= 0 ) {
-            respond.accept(type, new Error("Invalid name."));
+        if ( name.length() <= 1 || name.length() > 32 ) {
+            respond.accept(type, new Error("Please choose a name between 2 and 32 characters."));
             return;
         }
 
-        if ( name.length() > 16 ) {
-            respond.accept(type, new Error("Please choose a shorter name of less than 16 characters."));
+        if ( server.playerByName(name) != null ) {
+            respond.accept(type, new Error("This name is currently taken by someone else."));
             return;
         }
 

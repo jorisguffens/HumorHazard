@@ -65,6 +65,18 @@ export function useDispatchPartySettings() {
     }, [dispatch]);
 }
 
+export function useDispatchChatMessages() {
+    const dispatch = useDispatch();
+    return useCallback((chat_messages) => {
+        dispatch({
+            type: "PARTY_CHAT_MESSAGES",
+            action: (state) => {
+                return {...state, party: {...state.party, chat_messages}}
+            }
+        });
+    }, [dispatch]);
+}
+
 export function useDispatchPartyGame() {
     const dispatch = useDispatch();
     return useCallback((game) => {
@@ -154,6 +166,10 @@ export function usePartyPlayers() {
 
 export function usePartySettings() {
     return useSelector((state) => state.party && state.party.settings);
+}
+
+export function usePartyChatMessages() {
+    return useSelector((state) => state.party && state.party.chat_messages);
 }
 
 export function useGame() {

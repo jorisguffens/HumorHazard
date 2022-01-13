@@ -28,12 +28,12 @@ export default function Handler() {
         socketHandler.sendc("LOGIN", {token}).then((player) => {
             dispatchLogin(player);
         })
-        .catch(err => {
-            dispatchLogout();
-        })
-        .finally(() => {
-            setLoggingIn(false);
-        })
+            .catch(err => {
+                dispatchLogout();
+            })
+            .finally(() => {
+                setLoggingIn(false);
+            })
     }, [socketHandler, dispatchLogin, dispatchLogout])
 
     useEffect(() => {
@@ -54,15 +54,16 @@ export default function Handler() {
             <Broadcast/>
             <ConnectionStatus/>
 
-            <Alert severity={"info"}>
-                <strong>NEW UPDATE!</strong> The project has been severely updated. Please report issues in my&nbsp;
-                <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
-            </Alert>
+            <div style={{display: "flex", flexDirection: "column", height: "100%"}}>
+                <Alert severity={"info"}>
+                    <strong>NEW UPDATE!</strong> The project has been severely updated. Please report issues in my&nbsp;
+                    <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
+                </Alert>
 
-            <Container maxWidth={"xs"}>
-            </Container>
-
-            <Router/>
+                <div style={{flexGrow: 1}}>
+                    <Router/>
+                </div>
+            </div>
         </>
     )
 }

@@ -1,0 +1,46 @@
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+
+  background: #3f3f3f;
+  border-radius: 5px;
+}
+
+.messages {
+  flex-grow: 1;
+  height: 150px;
+  margin-bottom: 5px;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+.sendinput {
+  margin: 15px 5px 5px 5px;
+
+  & input {
+    background: #696969;
+    border-radius: 4px;
+  }
+}
+
+.message {
+  display: flex;
+  margin: 5px 10px;
+
+  & > div:first-child {
+    margin-right: 10px;
+    font-weight: bold;
+
+    &::after {
+      content: ":"
+    }
+  }
+
+  & > div:last-child {
+    border-radius: 20px;
+  }
+}

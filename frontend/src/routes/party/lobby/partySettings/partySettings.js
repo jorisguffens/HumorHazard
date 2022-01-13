@@ -1,5 +1,5 @@
 import {useCallback, useEffect} from "react";
-import {Grid, MenuItem, Select, Slider, Stack, Switch, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Grid, MenuItem, Select, Slider, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
 
 import {useDispatchPartySettings, usePartyPlayers, usePartySettings, usePlayer} from "../../../../redux/hooks";
 
