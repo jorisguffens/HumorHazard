@@ -31,12 +31,13 @@ public class RegisterPacketListener extends AbstractPacketListener {
             return;
         }
 
-        if ( server.playerByName(name) != null ) {
+        Player player = server.playerByName(name);
+        if ( player != null && player != server.playerByConnection(ch) ) {
             respond.accept(type, new Error("This name is currently taken by someone else."));
             return;
         }
 
-        Player player = server.register(name);
+        player = server.register(name);
         if ( player == null ) {
             respond.accept(type, new Error("Something went wrong. Registration failed."));
             return;
