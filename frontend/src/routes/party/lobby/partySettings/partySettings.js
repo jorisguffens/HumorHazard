@@ -1,11 +1,23 @@
 import {useCallback, useEffect} from "react";
-import {Grid, MenuItem, Select, Slider, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {
+    Divider,
+    Grid,
+    MenuItem,
+    Select,
+    Slider,
+    Stack,
+    ToggleButton,
+    ToggleButtonGroup,
+    useMediaQuery,
+    useTheme
+} from "@mui/material";
 
 import {useDispatchPartySettings, usePartyPlayers, usePartySettings, usePlayer} from "../../../../redux/hooks";
 
 import {usePacketHandler} from "../../../../socket/packetHandler";
 
 import style from "./partySettings.module.scss";
+import clsx from "clsx";
 
 export default function PartySettings() {
 
@@ -13,6 +25,9 @@ export default function PartySettings() {
     const settings = usePartySettings();
     const dispatchSettings = useDispatchPartySettings();
     const packetHandler = usePacketHandler();
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const disabled = partyPlayers[0].id !== usePlayer().id;
 
@@ -41,11 +56,11 @@ export default function PartySettings() {
 
     return (
         <>
-            <Grid container className={style.settingGroup}>
-                <Grid item xs={6} className={style.settingLabel}>
+            <Grid container className={clsx(style.settingGroup, isMobile && style.settingGroupMobile)}>
+                <Grid item xs={12} sm={6} className={style.settingLabel}>
                     Party visibility
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6} className={style.textCenter}>
                     <ToggleButtonGroup color="primary" value={settings.visible} exclusive disabled={disabled}
                                        onChange={(e, value) => update("visible", value)}>
                         <ToggleButton value={true}>Public</ToggleButton>
@@ -56,11 +71,11 @@ export default function PartySettings() {
                 </Grid>
             </Grid>
 
-            <Grid container className={style.settingGroup}>
-                <Grid item xs={6} className={style.settingLabel}>
+            <Grid container className={clsx(style.settingGroup, isMobile && style.settingGroupMobile)}>
+                <Grid item xs={12} sm={6} className={style.settingLabel}>
                     Player limit
                 </Grid>
-                <Grid item xs={6} style={{display: "flex", alignItems: "center"}}>
+                <Grid item xs={12} sm={6} style={{display: "flex", alignItems: "center"}}>
                     <Stack spacing={2} direction="row" sx={{width: "calc(100% - 10px)"}} alignItems="center">
                         <div style={{width: "20px"}}>{settings.player_limit}</div>
                         <Slider size="medium" value={settings.player_limit} disabled={disabled}
@@ -70,11 +85,11 @@ export default function PartySettings() {
                 </Grid>
             </Grid>
 
-            <Grid container className={style.settingGroup}>
-                <Grid item xs={6} className={style.settingLabel}>
+            <Grid container className={clsx(style.settingGroup, isMobile && style.settingGroupMobile)}>
+                <Grid item xs={12} sm={6} className={style.settingLabel}>
                     Score limit
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                     <Stack spacing={2} direction="row" sx={{width: "calc(100% - 10px)"}} alignItems="center">
                         <div style={{width: "20px"}}>{settings.score_limit}</div>
                         <Slider size="medium" value={settings.score_limit} disabled={disabled}
@@ -84,15 +99,15 @@ export default function PartySettings() {
                 </Grid>
             </Grid>
 
-            <Grid container className={style.settingGroup}>
-                <Grid item xs={6} className={style.settingLabel}>
+            <Grid container className={clsx(style.settingGroup, isMobile && style.settingGroupMobile)}>
+                <Grid item xs={12} sm={6} className={style.settingLabel}>
                     Timer multiplier
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                     <Select
                         value={settings.timer_duration_multiplier}
                         componentsProps={{Input: {InputLabelProps: {shrink: false}}}}
-                        label="" disabled={disabled}
+                        label="" disabled={disabled} fullWidth
                         onChange={(e) => update("timer_duration_multiplier", e.target.value)}
                     >
                         <MenuItem value={0}>Disabled</MenuItem>

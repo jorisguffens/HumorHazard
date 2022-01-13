@@ -39,7 +39,7 @@ export default function Register() {
                         Humor Hazard
                     </Typography>
 
-                    <img src={logo} alt=""/>
+                    <img src={logo} alt="" className={style.logo}/>
                     <br/><br/>
 
                     <form onSubmit={submit}>

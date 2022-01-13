@@ -1,14 +1,10 @@
+
 .wrapper {
-  padding: 5px;
-  flex-direction: row !important;
-  justify-content: right;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
 
-  & > :first-child {
-    margin-right: 5px;
-    flex: 1 0 auto;
-  }
-
-  & input {
-    //width: auto;
-  }
+.button {
+  height: 100%;
 }

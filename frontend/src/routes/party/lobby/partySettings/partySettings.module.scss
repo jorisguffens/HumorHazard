@@ -1,10 +1,22 @@
 
 .settingGroup {
-  margin-bottom: 10px;
-  height: 50px;
+  margin-bottom: 15px;
 }
 
 .settingLabel {
   display: flex;
   align-items: center;
+  margin-bottom: 5px;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.settingGroupMobile {
+  margin-bottom: 25px;
+
+  & .settingLabel {
+    justify-content: center;
+  }
 }

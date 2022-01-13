@@ -1,6 +1,6 @@
 import React, {useCallback, useMemo, useState} from "react";
 
-import {Button, FormGroup, TextField, Tooltip} from "@mui/material";
+import {Button, Grid, TextField, Tooltip} from "@mui/material";
 import {useParty} from "../../redux/hooks";
 
 import style from "./partylink.module.scss";
@@ -33,15 +33,21 @@ export default function PartyLink() {
     }, [link]);
 
     return (
-        <FormGroup className={style.wrapper}>
-            <TextField type="text" disabled variant={"outlined"} label={""}
-                       InputLabelProps={{shrink: false}} value={link}/>
-            <Tooltip open={copied} onClose={() => setCopied(false)}
-                     leaveDelay={1000} placement="top" title={"Copied!"}>
-                <Button variant="contained" onClick={copy}>
-                    <i className="far fa-copy"/>
-                </Button>
-            </Tooltip>
-        </FormGroup>
+        <div className={style.wrapper}>
+            <Grid container spacing={1}>
+                <Grid item xs={12} md={10}>
+                    <TextField type="text" disabled variant={"outlined"} label={""} fullWidth
+                               InputLabelProps={{shrink: false}} value={link}/>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                    <Tooltip open={copied} onClose={() => setCopied(false)}
+                             leaveDelay={1000} placement="top" title={"Copied!"}>
+                        <Button variant="contained" onClick={copy} fullWidth className={style.button}>
+                            <i className="far fa-copy"/>
+                        </Button>
+                    </Tooltip>
+                </Grid>
+            </Grid>
+        </div>
     )
 }

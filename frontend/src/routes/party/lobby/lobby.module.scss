@@ -12,11 +12,19 @@
   flex-direction: column !important;
 }
 
+.settingsWrapper, .playersWrapper {
+  margin-top: 15px !important;
+}
+
 .playersList {
   flex: 1 auto;
 }
 
 .playersActions {
   margin-top: 35px;
+  text-align: center;
+}
+
+.textCenter {
   text-align: center;
 }

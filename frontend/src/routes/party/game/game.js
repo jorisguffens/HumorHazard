@@ -1,4 +1,4 @@
-import {Container, Divider, Grid, Paper, Typography} from "@mui/material";
+import {Container, Divider, Grid, Paper, Typography, useMediaQuery, useTheme} from "@mui/material";
 import PartyLink from "../../../common/partylink/partylink";
 
 import Hand from "./hand/hand";
@@ -11,6 +11,7 @@ import {usePacketHandler} from "../../../socket/packetHandler";
 import {useDispatchGame, useDispatchGameParticipants, useDispatchGameRound} from "../../../redux/hooks";
 import Status from "./status/status";
 import Chatbox from "../../../common/chatbox/chatbox";
+import clsx from "clsx";
 
 export default function Game() {
 
@@ -18,6 +19,9 @@ export default function Game() {
     const dispatchGame = useDispatchGame();
     const dispatchGameRound = useDispatchGameRound();
     const dispatchGameParticipants = useDispatchGameParticipants();
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     useEffect(() => {
         const unregister = packetHandler.registerListener((packet) => {
@@ -37,12 +41,12 @@ export default function Game() {
             <br/>
             <Paper className={style.paper}>
                 <Grid container>
-                    <Grid item xs={12} md={8} className={style.title}>
+                    <Grid item xs={12} sm={6} lg={8} className={clsx(style.title, isMobile && style.titleMobile)}>
                         <Typography variant={"h4"} component={"h1"}>
                             Humor Hazard
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} sm={6} lg={4}>
                         <PartyLink/>
                     </Grid>
                 </Grid>

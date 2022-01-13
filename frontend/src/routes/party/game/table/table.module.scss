@@ -1,6 +1,7 @@
 
 .table {
   display: flex;
+  flex-wrap: wrap;
   margin: 15px 0 25px 0;
 }
 
@@ -10,10 +11,11 @@
 
 .startCards {
   flex-shrink: 0;
+  max-width: 100%;
+  margin-bottom: 10px;
 }
 
 .startCards .paper {
-  margin: 0 15px;
   padding: 10px 2.5px;
 
   & > div {
@@ -30,19 +32,12 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  flex-grow: 1;
+  margin-bottom: 10px;
 }
 
-.card {
+.pickedCards .card {
   transform: scale(.9);
-
-  &:first-child {
-    padding-left: 0;
-  }
-
-  &:last-child {
-    padding-right: 0;
-  }
+  padding: 10px 0;
 }
 
 .cardGroup {

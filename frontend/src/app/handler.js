@@ -59,7 +59,7 @@ export default function Handler() {
                     <strong>NEW UPDATE!</strong> The project has been severely updated. Please report issues in my&nbsp;
                     <Link href="https://discord.gg/dNWfCajm2F">discord</Link>.
                 </Alert>
-
+                <br/>
                 <div style={{flexGrow: 1}}>
                     <Router/>
                 </div>
