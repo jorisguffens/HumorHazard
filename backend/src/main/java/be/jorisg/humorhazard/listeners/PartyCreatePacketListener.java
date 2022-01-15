@@ -25,7 +25,13 @@ public class PartyCreatePacketListener extends AbstractPacketListener {
             return;
         }
 
-        Party party = server.createParty();
+        Party party = server.partyByPlayer(player);
+        if ( party != null ) {
+            respond.accept(type, new Error("You are already in a party."));
+            return;
+        }
+
+        party = server.createParty();
         party.addPlayer(player);
         respond.accept(type, party);
         server.sendPartyList();
